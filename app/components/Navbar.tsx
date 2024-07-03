@@ -23,15 +23,19 @@ const NavBarComponent: React.FC<NavBarComponentProps> = ({ className }) => {
               </span>
             </div>
           </HoveredLink>
-          <HoveredLink href="#">
+          <HoveredLink href="#about">
             {/* Display "About" on small screens */}
             <span className="sm:hidden">About</span>
             {/* Display "About Us" on larger screens */}
             <span className="hidden sm:inline">About Us</span>
           </HoveredLink>
-          <HoveredLink href="#">Services</HoveredLink>
+          <HoveredLink href="#products">Products</HoveredLink>
           <HoveredLink href="#">Store</HoveredLink>
-          <HoveredLink href="#">Contact US</HoveredLink>
+          <HoveredLink href="#contact">
+          <span className="sm:hidden">Contact</span>
+            {/* Display "Contact Us" on larger screens */}
+          <span className="hidden sm:inline">Contact Us</span>
+          </HoveredLink>
         </Menu>
       </div>
     </>

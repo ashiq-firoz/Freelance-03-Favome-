@@ -1,13 +1,19 @@
 import { useRef } from "react";
+import BackgroundBeamsDemo from "./components/HeroSection";
+import { SparklesPreview } from "./components/Hero";
+import About from "./components/About";
+import Products from "./components/Products";
+import { SignupFormDemo } from "./components/Contact";
 
-
-export default function Home() {
+export default function Page() {
   return (
    <>
-   <div className="bg-[url('/img/bg.jpg')] h-[80vh]">
-   <br /><br /><br />
-   <h1>Hello</h1>
-   </div>
+   {/* <BackgroundBeamsDemo/> */}
+   <SparklesPreview/>
+   <About/>
+   <img src="/img/banner.jpg" className="w-max" alt="" />
+   <Products/>
+   <SignupFormDemo/>
    </>
   );
 }
