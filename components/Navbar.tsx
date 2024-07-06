@@ -1,42 +1,45 @@
 "use client";
-import React from "react";
-import { FloatingNav } from "./ui/floating-navbar";
-import { IconHome, IconMessage, IconUser } from "@tabler/icons-react";
 
-const FloatingNavDemo=()=> {
-  const navItems = [
-    {
-      name: "Home",
-      link: "/",
-      icon: <IconHome className="h-4 w-4 text-neutral-500 dark:text-white" />,
-    },
-    {
-      name: "About",
-      link: "/about",
-      icon: <IconUser className="h-4 w-4 text-neutral-500 dark:text-white" />,
-    },
-    {
-      name: "Contact",
-      link: "/contact",
-      icon: (
-        <IconMessage className="h-4 w-4 text-neutral-500 dark:text-white" />
-      ),
-    },
-  ];
-  return (
-    <div className="relative  w-full">
-      <FloatingNav navItems={navItems} />
-      <DummyContent />
-    </div>
-  );
+import React, { useState } from "react";
+import { HoveredLink, Menu } from "./ui/navbar-menu";
+import { cn } from "../utils/cn";
+
+interface NavBarComponentProps {
+  className?: string;
 }
-const DummyContent = () => {
+
+const NavBarComponent: React.FC<NavBarComponentProps> = ({ className }) => {
+  const [active, setActive] = useState<string | null>(null);
+
   return (
-    <div className="grid grid-cols-1  w-full bg-white dark:bg-black relative border border-neutral-200 dark:border-white/[0.2] rounded-md">
-     
-      <div className="inset-0 absolute bg-grid-black/[0.1] dark:bg-grid-white/[0.2]" />
-    </div>
+    <>
+      <div className={cn("fixed top-6 inset-x-0 max-w-xl mx-auto z-50", className)}>
+        <Menu setActive={setActive}>
+          <HoveredLink href="/">
+            <div className="flex items-center">
+              {/* <img src="/img/logo.png" alt="Logo" className="h-15 w-10" /> */}
+              <span className="text-[#2C2C2C] font-semibold hidden sm:block">
+                FAVOME
+              </span>
+            </div>
+          </HoveredLink>
+          <HoveredLink href="#about">
+            {/* Display "About" on small screens */}
+            <span className="sm:hidden">About</span>
+            {/* Display "About Us" on larger screens */}
+            <span className="hidden sm:inline">About Us</span>
+          </HoveredLink>
+          <HoveredLink href="#products">Products</HoveredLink>
+          <HoveredLink href="#">Store</HoveredLink>
+          <HoveredLink href="#contact">
+          <span className="sm:hidden">Contact</span>
+            {/* Display "Contact Us" on larger screens */}
+          <span className="hidden sm:inline">Contact Us</span>
+          </HoveredLink>
+        </Menu>
+      </div>
+    </>
   );
 };
 
-export default FloatingNavDemo;
+export default NavBarComponent;

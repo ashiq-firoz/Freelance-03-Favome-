@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -81,7 +82,7 @@ const Carousel: React.FC = () => {
           </AnimatePresence>
           {index === centerIndex && (
             <div className="text-center mt-2">
-              <h1 className={`${Bebas.className} text-white text-2xl lg:text-5xl`}>{headings[src]}</h1>
+              {/* <h1 className={`${Bebas.className} text-white text-2xl lg:text-5xl`}>{headings[src]}</h1> */}
             </div>
           )}
 
