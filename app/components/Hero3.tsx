@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Hero: React.FC = () => {
-    const initialCards = {
+    const initialCards: Record<string, JSX.Element> = {
         "1": (
             <>
                 <img
@@ -57,19 +57,18 @@ const Hero: React.FC = () => {
 
     const handleDragEnd = () => {
         setDragged(false);
-    
+
         // Rotate the cards in a queue-like manner
         const temp = cards["1"];
         cards["1"] = cards["2"];
         cards["2"] = cards["3"];
         cards["3"] = temp;
-    
+
         // Update state to trigger re-render
         setCards({ ...cards });
-    
+
         console.log('stop');
     };
-    
 
     return (
         <section className="overflow-hidden bg-slate-900 px-8 py-24 text-slate-50">
@@ -91,40 +90,49 @@ const Hero: React.FC = () => {
                     </form>
                 </div>
                 <div className="relative h-[450px] w-[350px]">
-                    <motion.div
-                       drag
-                       dragConstraints={{ top: 0, left: -200, right: 0, bottom: 0 }}
-                       dragElastic={0.1} // Adjust dragElastic for smoother drag behavior
-                       onDragStart={() => setDragged(true)}
-                       onDragEnd={handleDragEnd}
-                       animate={dragged ? {} : { x: 0, y: 0, rotate: -6 }}
-                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                       className="absolute left-0 top-0 grid h-[450px] w-[350px] select-none place-content-center space-y-6 rounded-2xl border-2 border-slate-700 bg-slate-800/20 p-6 shadow-xl backdrop-blur-md cursor-grab active:cursor-grabbing"
-                        style={{
-                            zIndex: 2,
-                            userSelect: 'none',
-                            touchAction: 'none',
-                        }}
-                        draggable="false"
-                    >
-                        {cards["1"]}
-                    </motion.div>
+                    <AnimatePresence>
+                        <motion.div
+                            key="1"
+                            drag
+                            dragConstraints={{ top: 0, left: -200, right: 0, bottom: 0 }}
+                            dragElastic={0.1}
+                            onDragStart={() => setDragged(true)}
+                            onDragEnd={handleDragEnd}
+                            animate={dragged ? {} : { x: 0, y: 0, rotate: -6 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            className="absolute left-0 top-0 grid h-[450px] w-[350px] select-none place-content-center space-y-6 rounded-2xl border-2 border-slate-700 bg-slate-800/20 p-6 shadow-xl backdrop-blur-md cursor-grab active:cursor-grabbing"
+                            style={{
+                                zIndex: 2,
+                                userSelect: 'none',
+                                touchAction: 'none',
+                            }}
+                            draggable="false"
+                        >
+                            {cards["1"]}
+                        </motion.div>
+                    </AnimatePresence>
                     <div
                         className="absolute left-0 top-0 grid h-[450px] w-[350px] select-none place-content-center space-y-6 rounded-2xl border-2 border-slate-700 bg-slate-800/20 p-6 shadow-xl backdrop-blur-md"
                         style={{ zIndex: 0, transform: 'translateX(66%) rotate(6deg)' }}
                     >
                         {cards["2"]}
                     </div>
-                    <div
-                        className="absolute left-0 top-0 grid h-[450px] w-[350px] select-none place-content-center space-y-6 rounded-2xl border-2 border-slate-700 bg-slate-800/20 p-6 shadow-xl backdrop-blur-md"
-                        style={{ zIndex: 1, transform: 'translateX(33%) rotate(0deg)' }}
-                    >
-                        {cards["3"]}
-                    </div>
+                    <AnimatePresence>
+                        <motion.div
+                            key="3"
+                            initial={{ x: 100, rotate: 0 }}
+                            animate={{ x: dragged ? 0 : 100, rotate: dragged ? 0 : 0 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 30, delay: dragged ? 0 : 0.1 }}
+                            className="absolute left-0 top-0 grid h-[450px] w-[350px] select-none place-content-center space-y-6 rounded-2xl border-2 border-slate-700 bg-slate-800/20 p-6 shadow-xl backdrop-blur-md"
+                            style={{ zIndex: 1 }}
+                        >
+                            {cards["3"]}
+                        </motion.div>
+                    </AnimatePresence>
                 </div>
             </div>
         </section>
     );
-}
+};
 
 export default Hero;
