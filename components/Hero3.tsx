@@ -56,12 +56,12 @@ const Hero: React.FC = () => {
     
 
     return (
-        <section className="overflow-hidden bg-custom-blue px-8 py-24 text-slate-50 h-[100vh]">
+        <section className="overflow-hidden bg-custom-blue bg-contain px-8 py-24 text-slate-50 h-[100vh]">
             <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-16 md:grid-cols-2 md:gap-8">
                 <div>
                     <h3 className="text-5xl font-black leading-[1.25] md:text-7xl">Favome</h3>
                     <p className="mb-8 mt-4 text-lg text-slate-400">
-                        ...but we're going to help. We send out weekly breakdowns of exactly what's working and what's not for the largest companies in the world. It's free.
+                    MY FAVORITE WAY
                     </p>
                     
                 </div>
@@ -70,11 +70,11 @@ const Hero: React.FC = () => {
                     <motion.div
                        drag
                        dragConstraints={{ top: 0, left: -400, right: 50, bottom: 100 }}
-                       dragElastic={0} // Adjust dragElastic for smoother drag behavior
+                       dragElastic={0.4} // Adjust dragElastic for smoother drag behavior
                        onDragStart={() => setDragged(true)}
                        onDragEnd={handleDragEnd}
                        animate={dragged ? {} : { x: 0, y: 0, rotate: -6 }}
-                       transition={{ type: "spring", stiffness: 80,mass:5, damping: 15, duration: 0 }}
+                       transition={{ type: "spring", stiffness: 50,mass:10, damping: 300,duration:0.6,bounce:0.25,restDelta:0.5,restSpeed:0.5,velocity:10,from:0 }}
                        className="absolute left-0 top-0 grid h-[450px] w-[280px] select-none place-content-center space-y-6 rounded-2xl border-2 border-slate-700 bg-slate-800/20  shadow-xl  cursor-grab active:cursor-grabbing"
                         style={{
                             zIndex: 2,
