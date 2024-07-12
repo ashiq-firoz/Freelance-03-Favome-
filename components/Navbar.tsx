@@ -18,7 +18,7 @@ const NavBarComponent: React.FC<NavBarComponentProps> = ({ className }) => {
           <HoveredLink href="/">
             <div className="flex items-center">
               {/* <img src="/img/logo.png" alt="Logo" className="h-15 w-10" /> */}
-              <span className="text-[#2C2C2C] font-semibold hidden sm:block">
+              <span className="text-black font-semibold hidden sm:block">
                 FAVOME
               </span>
             </div>

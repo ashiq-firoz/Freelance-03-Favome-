@@ -7,7 +7,7 @@ import { TextParallaxContentExample } from '../components/TextParallaxContentExa
 import Navbar from '@/components/Navbar'
 import Hero2 from '@/components/Hero2';
 import Hero3 from '@/components/Hero3';
-
+import Footer from '@/components/footer';
 
 const Page: React.FC = () => {
   return (
@@ -22,8 +22,9 @@ const Page: React.FC = () => {
       <TextParallaxContentExample />
     </div>
     
-     
-      <div className='bg-red-600 h-3/5  py-11'>hello world</div>
+{/*      
+      <div className='bg-red-600 h-3/5  py-11'>hello world</div> */}
+      <Footer/>
 
     </div>
   );
