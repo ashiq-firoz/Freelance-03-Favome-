@@ -108,7 +108,7 @@ const Hero: React.FC = () => {
                         </button>
                     </form>
                 </div>
-                <div className="relative h-[450px] w-[350px]">
+                <div className="relative h-[300px] lg:h-[450px] w-[200px] lg:w-[350px]">
                     <motion.div
                         layout
                         drag
@@ -118,7 +118,7 @@ const Hero: React.FC = () => {
                         onDragEnd={handleDragEnd}
                         animate={dragged ? {} : { x: 0, y: 0, rotate: -6 }}
                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                        className="absolute left-0 top-0 grid h-[450px] w-[350px] select-none place-content-center space-y-6 rounded-2xl border-2 border-slate-700 bg-slate-800/20 p-6 shadow-xl backdrop-blur-md cursor-grab active:cursor-grabbing"
+                        className="absolute left-0 top-0 grid h-[300px] lg:h-[450px] w-[200px] lg:w-[350px] select-none place-content-center space-y-6 rounded-2xl border-2 border-slate-700 bg-slate-800/20 p-6 shadow-xl backdrop-blur-md cursor-grab active:cursor-grabbing"
                         style={{
                             zIndex: 2,
                             userSelect: 'none',
@@ -134,7 +134,7 @@ const Hero: React.FC = () => {
                         initial={{ x: 200, rotate: 6 }}
                         animate={{ x: dragged ? 0 : 200, rotate: dragged ? 0 : 6 }}
                         transition={{ type: "spring", stiffness: 300, damping: 30, delay: dragged ? 0 : 0.2 }}
-                        className="absolute left-0 top-0 grid h-[450px] w-[350px] select-none place-content-center space-y-6 rounded-2xl border-2 border-slate-700 bg-slate-800/20 p-6 shadow-xl backdrop-blur-md"
+                        className="absolute left-0 top-0 grid h-[300px] lg:h-[450px] w-[200px] lg:w-[350px] select-none place-content-center space-y-6 rounded-2xl border-2 border-slate-700 bg-slate-800/20 p-6 shadow-xl backdrop-blur-md"
                         style={{ zIndex: 0 }}
                         onClick={handleClick}
                     >
@@ -145,7 +145,7 @@ const Hero: React.FC = () => {
                         initial={{ x: 100, rotate: 0 }}
                         animate={{ x: dragged ? 0 : 100, rotate: dragged ? 0 : 0 }}
                         transition={{ type: "spring", stiffness: 300, damping: 30, delay: dragged ? 0 : 0.1 }}
-                        className="absolute left-0 top-0 grid h-[450px] w-[350px] select-none place-content-center space-y-6 rounded-2xl border-2 border-slate-700 bg-slate-800/20 p-6 shadow-xl backdrop-blur-md"
+                        className="absolute left-0 top-0 grid h-[300px] lg:h-[450px] w-[200px] lg:w-[350px] select-none place-content-center space-y-6 rounded-2xl border-2 border-slate-700 bg-slate-800/20 p-6 shadow-xl backdrop-blur-md"
                         style={{ zIndex: 1 }}
                         onClick={handleClick}
                     >
