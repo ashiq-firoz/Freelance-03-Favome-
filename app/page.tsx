@@ -1,5 +1,5 @@
 import React from 'react';
-
+import Footer from '@/components/footer';
 import Card from '../components/Card';
 import Hero from '../components/Hero'
 import StickyScroll from '../components/StickyScroll'
@@ -22,8 +22,8 @@ const Page: React.FC = () => {
       <TextParallaxContentExample />
     </div>
     
+     <Footer/> 
      
-      <div className='bg-red-600 h-3/5  py-11'>hello world</div>
 
     </div>
   );
