@@ -1,5 +1,5 @@
 import React from 'react';
-import Footer from '@/components/footer';
+
 import Card from '../components/Card';
 import Hero from '../components/Hero'
 import StickyScroll from '../components/StickyScroll'
