@@ -1,8 +1,10 @@
+
+
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-
 
 const Hero: React.FC = () => {
     const initialCards: Record<string, JSX.Element> = {
@@ -11,7 +13,7 @@ const Hero: React.FC = () => {
                 <img
                     src="/img/Card.jpeg"
                     alt="Favome Card"
-                    className="pointer-events-none mx-auto h-[300px] lg:h-[450px] w-[400px] lg:w-[350px] rounded-2xl border-2 border-slate-700 object-cover backdrop-blur-md backdrop-filter"
+                    className="pointer-events-none mx-auto h-[300px] lg:h-[450px] rounded-2xl border-2 border-slate-700 object-cover backdrop-blur-md backdrop-filter"
                 />
 
             </>
@@ -21,7 +23,7 @@ const Hero: React.FC = () => {
                 <img
                     src="/img/Card3.jpg"
                     alt="Favome Card"
-                    className="pointer-events-none  mx-auto h-[300px] lg:h-[450px] w-[400px] lg:w-[350px] border-2 border-slate-700 bg-slate-200 object-cover rounded-2xl"
+                    className="pointer-events-none  mx-auto h-[450px] w-[350px] border-2 border-slate-700 bg-slate-200 object-cover rounded-2xl"
                 />
             </>
         ),
@@ -30,7 +32,7 @@ const Hero: React.FC = () => {
                 <img
                     src="/img/Card2.jpeg"
                     alt="Favome Card"
-                    className="pointer-events-none  mx-auto h-[300px] lg:h-[450px] w-[400px] lg:w-[350px] border-2 border-slate-700 bg-slate-200 object-cover rounded-2xl"
+                    className="pointer-events-none  mx-auto h-[450px] w-auto border-2 border-slate-700 bg-slate-200 object-cover rounded-2xl"
                 />
 
             </>
@@ -75,21 +77,12 @@ const Hero: React.FC = () => {
     };
 
     return (
-        
-        <section className="overflow-hidden bg-slate-900 px-8 py-24 text-slate-50"> 
-            
-
-            <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-16 md:grid-cols-2 md:gap-8 ">
+        <section className="overflow-hidden h-full bg-slate-900  px-8 py-24 text-slate-50">
+            <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-16 md:grid-cols-2 md:gap-8">
                 <div>
-                    
-                    <h3 className=" text-7xl lg:text-9xl  text-center relative z-20 bg-clip-text text-transparent py-10"
-                    style={{backgroundImage:'linear-gradient(to right, #0000ff, #800080)'}}>FAVOME</h3>
-                    <p className="mb-8 mt-4 text-lg text-slate-500">
-                        <span className='text-slate-700'>
-                        MY FAVORITE WAY <br></br>
-                        </span>
-                        Digitize your business, education, entertainment, career, and personal life with FAVOME. <br></br>
-                        Unlock your unlimited potential today
+                    <h3 className="text-7xl lg:text-9xl font-black leading-[1.25] md:text-7xl">FAVOME</h3>
+                    <p className="mb-8 mt-4 text-lg text-slate-400">
+                    Digitize your business, education, entertainment, career, and personal life with FAVOME.         Unlock your unlimited potential today
                     </p>
                     
                 </div>
@@ -138,7 +131,6 @@ const Hero: React.FC = () => {
                     </motion.div>
                 </div>
             </div>
-
         </section>
     );
 };

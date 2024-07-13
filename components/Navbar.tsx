@@ -13,7 +13,7 @@ const NavBarComponent: React.FC<NavBarComponentProps> = ({ className }) => {
 
   return (
     <>
-      <div className={cn("fixed top-6 inset-x-0 max-w-xl mx-auto z-50", className)}>
+      <div className={cn("fixed top-6 inset-x-0 max-w-lg mx-auto z-50", className)}>
         <Menu setActive={setActive}>
           <HoveredLink href="/">
             <div className="flex items-center">
