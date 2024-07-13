@@ -80,8 +80,8 @@ const Hero: React.FC = () => {
         <section className="overflow-hidden h-full bg-slate-900  px-8 py-24 text-slate-50">
             <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-16 md:grid-cols-2 md:gap-52">
                 <div >
-                    <h3 className="text-7xl lg:text-9xl font-black leading-[1.25] md:text-7xl">FAVOME</h3>
-                    <p className="mb-8 mt-4 text-lg text-slate-400">
+                    <h3 className="text-7xl lg:text-9xl font-black leading-[1.25] md:text-7xl mr-[100px]">FAVOME<sup>	&#8482;</sup></h3>
+                    <p className="mb-8 mt-4 text-2xl text-slate-400 w-5/6">
                     Digitize your business, education, entertainment, career, and personal life with FAVOME.         Unlock your unlimited potential today
                     </p>
                     

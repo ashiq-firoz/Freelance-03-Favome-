@@ -3,10 +3,17 @@
 import React, { useRef, ReactNode } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { FiArrowUpRight } from "react-icons/fi";
+import { Open_Sans } from 'next/font/google'
+
+export const open_sans = Open_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+  weight : '400'
+});
 
 interface TextParallaxContentProps {
   imgUrl: string;
-  subheading: string;
+ 
   heading: string;
   paragraph: string;
   
@@ -15,7 +22,7 @@ interface TextParallaxContentProps {
 
 const TextParallaxContent: React.FC<TextParallaxContentProps> = ({
   imgUrl,
-  subheading,
+ 
   heading,
   paragraph,
 
@@ -25,7 +32,7 @@ const TextParallaxContent: React.FC<TextParallaxContentProps> = ({
     <div style={{ paddingLeft: IMG_PADDING, paddingRight: IMG_PADDING }}>
       <div className="relative h-[150vh]">
         <StickyImage imgUrl={imgUrl} />
-        <OverlayCopy heading={heading} subheading={subheading}  />
+        <OverlayCopy heading={heading}  />
         <OverlayCopy2 paragraph={paragraph}/>
       </div>
       
@@ -66,8 +73,8 @@ const StickyImage: React.FC<{ imgUrl: string }> = ({ imgUrl }) => {
   );
 };
 
-const OverlayCopy: React.FC<{ subheading: string; heading: string }> = ({
-  subheading,
+const OverlayCopy: React.FC<{  heading: string }> = ({
+
   heading,
 }) => {
   const targetRef = useRef<HTMLDivElement>(null);
@@ -85,8 +92,8 @@ const OverlayCopy: React.FC<{ subheading: string; heading: string }> = ({
       ref={targetRef}
       className="absolute left-0 top-0 flex h-screen w-full flex-col items-center justify-center text-white"
     >
-      <p className="mb-2 text-center text-xl md:mb-4 md:text-3xl">{subheading}</p>
-      <p className="text-center text-4xl font-bold md:text-7xl">{heading}</p>
+      
+      <p className={`${open_sans.className} text-center text-4xl font-bold  md:text-7xl `}>{heading}</p>
     </motion.div>
   );
 };
@@ -100,7 +107,7 @@ const OverlayCopy2: React.FC<{ paragraph:string; }> = ({
     offset: ["start end", "end start"],
   });
 
-  const y = useTransform(scrollYProgress, [0.60, 0.95], [500, 150]);
+  const y = useTransform(scrollYProgress, [0.60, 0.95], [300, 350]);
   const opacity = useTransform(scrollYProgress, [0.25, 0.5, 0.75], [0, 0, 1]);
 
   return (
@@ -110,7 +117,7 @@ const OverlayCopy2: React.FC<{ paragraph:string; }> = ({
       className="absolute left-0 top-0 flex h-screen  flex-col items-center justify-center text-white"
     >
       
-      <p className="text-center w-3/4 text-4xl font-bold md:text-4xl">{paragraph}</p>
+      <p className={`${open_sans.className}   text-center w-3/4 text-4xl font-sans  md:text-4xl `}>{paragraph}</p>
     </motion.div>
   );
 };
@@ -137,7 +144,7 @@ export const TextParallaxContentExample: React.FC = () => {
     <div className="bg-white">
       <TextParallaxContent
         imgUrl="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2671&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        subheading="Collaborate"
+        
         heading="Favome Biz Booster "
         paragraph="Empowering local shops and businesses to compete with giants like Amazon and Flipkart. 
         Our goal is to boost local business by establishing a strong online presence. Adapt and thrive in the digital age with Favome."
@@ -146,7 +153,7 @@ export const TextParallaxContentExample: React.FC = () => {
       </TextParallaxContent>
       <TextParallaxContent
         imgUrl="https://images.unsplash.com/photo-1530893609608-32a9af3aa95c?q=80&w=2564&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        subheading="Quality"
+        
         heading="Favome Edutrack App"
          paragraph="Where we begin where other education apps fall short. 
          We address the challenges parents face in their children's education. Experience tailored solutions that make learning seamless and effective.
@@ -156,7 +163,7 @@ export const TextParallaxContentExample: React.FC = () => {
       </TextParallaxContent>
       <TextParallaxContent
         imgUrl="https://images.unsplash.com/photo-1530893609608-32a9af3aa95c?q=80&w=2564&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        subheading="Never Compromise"
+       
         heading="Favome E-commerce Platform"
          paragraph="Dedicated to promoting local manufacturers and businesses. We provide a platform for local 
          shop owners to reach thousands of Favome customers. Support your community while enjoying a unique shopping experience.
@@ -165,7 +172,7 @@ export const TextParallaxContentExample: React.FC = () => {
         
       </TextParallaxContent><TextParallaxContent
         imgUrl="https://images.unsplash.com/photo-1530893609608-32a9af3aa95c?q=80&w=2564&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        subheading="Quality"
+       
         heading="Favome Careers"
          paragraph="Dedicated to promoting local manufacturers and businesses. We provide a platform for local shop owners to reach thousands of Favome customers. Support your community while enjoying a unique shopping experience.
 "
