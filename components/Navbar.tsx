@@ -17,10 +17,10 @@ const NavBarComponent: React.FC<NavBarComponentProps> = ({ className }) => {
         <Menu setActive={setActive}>
           <HoveredLink href="/">
             <div className="flex items-center">
-              {/* <img src="/img/logo.png" alt="Logo" className="h-15 w-10" /> */}
-              <span className="text-black font-semibold hidden sm:block">
+              <img src="/img/logo.png" alt="Logo" className="h-15 w-10" />
+              {/* <span className="text-black font-semibold hidden sm:block">
                 FAVOME
-              </span>
+              </span> */}
             </div>
           </HoveredLink>
           <HoveredLink href="#about">

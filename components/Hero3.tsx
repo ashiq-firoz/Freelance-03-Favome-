@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { SparklesCore } from "./ui/sparkles";
+
 
 const Hero: React.FC = () => {
     const initialCards: Record<string, JSX.Element> = {
@@ -11,7 +11,7 @@ const Hero: React.FC = () => {
                 <img
                     src="/img/Card.jpeg"
                     alt="Favome Card"
-                    className="pointer-events-none mx-auto h-[300px] lg:h-[450px] rounded-2xl border-2 border-slate-700 object-cover backdrop-blur-md backdrop-filter"
+                    className="pointer-events-none mx-auto h-[300px] lg:h-[450px] w-[400px] lg:w-[350px] rounded-2xl border-2 border-slate-700 object-cover backdrop-blur-md backdrop-filter"
                 />
 
             </>
@@ -21,7 +21,7 @@ const Hero: React.FC = () => {
                 <img
                     src="/img/Card3.jpg"
                     alt="Favome Card"
-                    className="pointer-events-none  mx-auto h-[450px] w-[350px] border-2 border-slate-700 bg-slate-200 object-cover rounded-2xl"
+                    className="pointer-events-none  mx-auto h-[300px] lg:h-[450px] w-[400px] lg:w-[350px] border-2 border-slate-700 bg-slate-200 object-cover rounded-2xl"
                 />
             </>
         ),
@@ -30,7 +30,7 @@ const Hero: React.FC = () => {
                 <img
                     src="/img/Card2.jpeg"
                     alt="Favome Card"
-                    className="pointer-events-none  mx-auto h-[450px] w-auto border-2 border-slate-700 bg-slate-200 object-cover rounded-2xl"
+                    className="pointer-events-none  mx-auto h-[300px] lg:h-[450px] w-[400px] lg:w-[350px] border-2 border-slate-700 bg-slate-200 object-cover rounded-2xl"
                 />
 
             </>
@@ -76,24 +76,13 @@ const Hero: React.FC = () => {
     };
 
     return (
-        <div className="h-[45rem] px-8 py-44 lg:py-24 relative w-full bg-slate-300 flex flex-col items-center justify-center overflow-hidden rounded-md">
-            <div className="w-full absolute inset-0 h-screen">
-                <SparklesCore
-                    id="tsparticlesfullpage"
-                    background="transparent"
-                    minSize={1.5}
-                    maxSize={3}
-                    particleDensity={100}
-                    className="w-full h-full"
-                    particleColor="#083b8a"
-                />
-            </div>
-            {/*  <section className="overflow-hidden bg-white px-8 py-24 text-slate-50"> */}
+        
+              <section className="overflow-hidden bg-slate-900 px-8 py-24 text-slate-50"> 
             <br />
 
-            <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-16 md:grid-cols-2 md:gap-8 py-24 lg:py-0">
+            <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-16 md:grid-cols-2 md:gap-8 ">
                 <div>
-                    <br /><br />
+                
                     <h3 className=" text-7xl lg:text-9xl  text-center relative z-20 bg-clip-text text-transparent py-10"
                     style={{backgroundImage:'linear-gradient(to right, #0000ff, #800080)'}}>FAVOME</h3>
                     <p className="mb-8 mt-4 text-lg text-slate-500">
@@ -161,7 +150,7 @@ const Hero: React.FC = () => {
                 </div>
             </div>
 
-        </div>
+        </section>
     );
 };
 
