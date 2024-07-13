@@ -107,10 +107,10 @@ const OverlayCopy2: React.FC<{ paragraph:string; }> = ({
     <motion.div
       style={{ y, opacity }}
       ref={targetRef}
-      className="absolute left-0 top-0 flex h-screen w-3/4 flex-col items-center justify-center text-white"
+      className="absolute left-0 top-0 flex h-screen  flex-col items-center justify-center text-white"
     >
       
-      <p className="text-center text-4xl font-bold md:text-4xl">{paragraph}</p>
+      <p className="text-center w-3/4 text-4xl font-bold md:text-4xl">{paragraph}</p>
     </motion.div>
   );
 };
@@ -148,7 +148,9 @@ export const TextParallaxContentExample: React.FC = () => {
         imgUrl="https://images.unsplash.com/photo-1530893609608-32a9af3aa95c?q=80&w=2564&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
         subheading="Quality"
         heading="Favome Edutrack App"
-         paragraph="fkalsdfjlkaskldffjlaskdjkasdfjlsdakjfllllllll sdfakljafjasjdfjlk jsaldfjjasdfjjsdfjasjdf jjsdjfj sdjfjasdf jasjdj df"
+         paragraph="Where we begin where other education apps fall short. 
+         We address the challenges parents face in their children's education. Experience tailored solutions that make learning seamless and effective.
+"
       >
     
       </TextParallaxContent>
@@ -156,14 +158,17 @@ export const TextParallaxContentExample: React.FC = () => {
         imgUrl="https://images.unsplash.com/photo-1530893609608-32a9af3aa95c?q=80&w=2564&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
         subheading="Never Compromise"
         heading="Favome E-commerce Platform"
-         paragraph="fkalsdfjlkaskldffjlaskdjkasdfjlsdakjfllllllll sdfakljafjasjdfjlk jsaldfjjasdfjjsdfjasjdf jjsdjfj sdjfjasdf jasjdj df"
+         paragraph="Dedicated to promoting local manufacturers and businesses. We provide a platform for local 
+         shop owners to reach thousands of Favome customers. Support your community while enjoying a unique shopping experience.
+"
       >
         
       </TextParallaxContent><TextParallaxContent
         imgUrl="https://images.unsplash.com/photo-1530893609608-32a9af3aa95c?q=80&w=2564&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
         subheading="Quality"
         heading="Favome Careers"
-         paragraph="fkalsdfjlkaskldffjlaskdjkasdfjlsdakjfllllllll sdfakljafjasjdfjlk jsaldfjjasdfjjsdfjasjdf jjsdjfj sdjfjasdf jasjdj df"
+         paragraph="Dedicated to promoting local manufacturers and businesses. We provide a platform for local shop owners to reach thousands of Favome customers. Support your community while enjoying a unique shopping experience.
+"
       >
         
       </TextParallaxContent>
