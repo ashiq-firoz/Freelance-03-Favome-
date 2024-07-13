@@ -76,7 +76,7 @@ const OverlayCopy: React.FC<{ subheading: string; heading: string; description: 
   const headingOpacity = useTransform(scrollYProgress, [0.25, 0.5, 0.75], [0, 1, 0]);
 
   const descriptionY = useTransform(scrollYProgress, [0.5, 0.75, 1], [50, 0, -50]);
-  const descriptionOpacity = useTransform(scrollYProgress, [0.5, 0.75, 1], [0, 1, 0]);
+  const descriptionOpacity = useTransform(scrollYProgress, [0.25, 0.5, 0.75], [0, 1, 0]); //useTransform(scrollYProgress, [0.5, 0.75, 1], [0, 1, 0]);
 
   return (
     <motion.div
