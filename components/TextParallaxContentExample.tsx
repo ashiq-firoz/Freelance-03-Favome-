@@ -100,7 +100,7 @@ const OverlayCopy2: React.FC<{ paragraph:string; }> = ({
     offset: ["start end", "end start"],
   });
 
-  const y = useTransform(scrollYProgress, [0.5, 0.85], [500, 300]);
+  const y = useTransform(scrollYProgress, [0.60, 0.95], [500, 150]);
   const opacity = useTransform(scrollYProgress, [0.25, 0.5, 0.75], [0, 0, 1]);
 
   return (
