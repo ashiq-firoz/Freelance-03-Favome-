@@ -152,7 +152,7 @@ export const TextParallaxContentExample: React.FC = () => {
         
       </TextParallaxContent>
       <TextParallaxContent
-        imgUrl="https://images.unsplash.com/photo-1530893609608-32a9af3aa95c?q=80&w=2564&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        imgUrl="/img/banners/edu.jpg"
         
         heading="Favome Edutrack App"
          paragraph="Where we begin where other education apps fall short. 
@@ -162,7 +162,7 @@ export const TextParallaxContentExample: React.FC = () => {
     
       </TextParallaxContent>
       <TextParallaxContent
-        imgUrl="https://images.unsplash.com/photo-1530893609608-32a9af3aa95c?q=80&w=2564&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        imgUrl="/img/banners/commerce.jpg"
        
         heading="Favome E-commerce Platform"
          paragraph="Dedicated to promoting local manufacturers and businesses. We provide a platform for local 
@@ -171,7 +171,7 @@ export const TextParallaxContentExample: React.FC = () => {
       >
         
       </TextParallaxContent><TextParallaxContent
-        imgUrl="https://images.unsplash.com/photo-1530893609608-32a9af3aa95c?q=80&w=2564&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        imgUrl="/img/banners/career.jpg"
        
         heading="Favome Careers"
          paragraph="We're hiring designers, digital marketers, influencers, photographers, content creators, sales executives, marketing managers, and team leaders. Be part of a team that creates opportunities and shapes the future. Yes, we create jobs."
