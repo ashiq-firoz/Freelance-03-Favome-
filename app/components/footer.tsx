@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { FiYoutube, FiInstagram, FiLinkedin } from 'react-icons/fi';
-import { Instagram, Youtube } from 'lucide-react';
+// import { Instagram, Youtube } from 'lucide-react';
 import { Antonio } from 'next/font/google'
 
 export const antonio = Antonio({
@@ -87,10 +87,10 @@ const Footer: React.FC = () => {
                             </motion.h2>
                             <ul className="text-gray-500 dark:text-gray-400 font-medium">
                                 <li className="mb-4">
-                                    <a href="#" className="hover:underline"><Youtube /></a>
+                                    <a href="#" className="hover:underline"><FiYoutube /></a>
                                 </li>
                                 <li>
-                                    <a href="#" className="hover:underline"><Instagram /></a>
+                                    <a href="#" className="hover:underline"><FiInstagram /></a>
                                 </li>
                             </ul>
                         </div>
