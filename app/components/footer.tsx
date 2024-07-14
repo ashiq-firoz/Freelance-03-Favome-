@@ -41,7 +41,7 @@ const Footer: React.FC = () => {
     }, []);
 
     return (
-        <footer ref={footerRef} className="bg-white dark:bg-gray-900">
+        <footer ref={footerRef} className="bg-gray-900">
             <div className="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
                 <div className="md:flex md:justify-between">
                     <div className="mb-6 md:mb-0">
@@ -51,7 +51,7 @@ const Footer: React.FC = () => {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: isInView ? 1 : 0 }}
                                 transition={{ duration: 1 }}
-                                className={`${antonio.className} self-center text-2xl font-semibold whitespace-nowrap text-black`}
+                                className={`${antonio.className} self-center text-2xl font-semibold whitespace-nowrap text-white`}
                             >
                                 FAVOME
                             </motion.span>
@@ -63,7 +63,7 @@ const Footer: React.FC = () => {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: isInView ? 1 : 0 }}
                                 transition={{ duration: 1 }}
-                                className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white"
+                                className="mb-6 text-sm font-semibold  uppercase text-white"
                             >
                                 Resources
                             </motion.h2>
@@ -81,7 +81,7 @@ const Footer: React.FC = () => {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: isInView ? 1 : 0 }}
                                 transition={{ duration: 1 }}
-                                className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white"
+                                className="mb-6 text-sm font-semibold  uppercase text-white"
                             >
                                 Follow us
                             </motion.h2>
@@ -99,7 +99,7 @@ const Footer: React.FC = () => {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: isInView ? 1 : 0 }}
                                 transition={{ duration: 1 }}
-                                className="mb-6 text-sm font-semibold text-gray-900 uppercase"
+                                className="mb-6 text-sm font-semibold text-white uppercase"
                             >
                                 Legal
                             </motion.h2>
@@ -118,7 +118,7 @@ const Footer: React.FC = () => {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: isInView ? 1 : 0 }}
                                 transition={{ duration: 1.5 }}
-                                className="mb-6 text-sm font-semibold text-gray-900 uppercase"
+                                className="mb-6 text-sm font-semibold text-white uppercase"
                             >
                                 Address
                             </motion.h2>
