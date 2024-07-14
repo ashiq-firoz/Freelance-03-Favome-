@@ -46,12 +46,12 @@ const Footer: React.FC = () => {
                 <div className="md:flex md:justify-between">
                     <div className="mb-6 md:mb-0">
                         <a href="#" className="flex items-center">
-                            <img src="/img/logo.png" className="h-8 me-3" alt="FlowBite Logo" />
+                            <img src="/img/logo.png" className="h-11 me-3" alt="Favome Logo" />
                             <motion.span
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: isInView ? 1 : 0 }}
                                 transition={{ duration: 1 }}
-                                className={`${antonio.className} self-center text-2xl font-semibold whitespace-nowrap text-white`}
+                                className={`${antonio.className} self-center text-5xl mb-[5 px] font-semibold whitespace-nowrap text-white`}
                             >
                                 FAVOME
                             </motion.span>
@@ -124,10 +124,11 @@ const Footer: React.FC = () => {
                             </motion.h2>
                             <ul className="text-gray-500 dark:text-gray-400 font-medium">
                                 <li className="mb-4">
-                                    FAVOME, ABC P.O, TRV, Kerala, 698735
+                                    FAVOME<br></br> 39/11 A1 Opp IOC petrol pump <br></br> Mankave ,Thiruvannur , Kozhikode<br></br> Kerala 673029
                                 </li>
                                 <li>
-                                    Phone : +91 786655454
+                                    Phone : 0495-3101257<br></br>
+                                    Email:info@favome.com
                                 </li>
                             </ul>
                         </div>
