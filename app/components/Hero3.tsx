@@ -13,7 +13,7 @@ const Hero: React.FC = () => {
                     className="pointer-events-none mx-auto h-32 w-32 rounded-full border-2 border-slate-700 bg-slate-200 object-cover"
                 />
                 <span className="text-center text-lg italic text-slate-400">
-                    "My boss thinks I know what I'm doing. Honestly, I just read this newsletter."
+                    My boss thinks I know what I&apos;m doing. Honestly, I just read this newsletter.
                 </span>
                 <span className="text-center text-sm font-medium text-indigo-400">
                     Adrian Y. - Product Marketing @ Meta
@@ -28,7 +28,7 @@ const Hero: React.FC = () => {
                     className="pointer-events-none mx-auto h-32 w-32 rounded-full border-2 border-slate-700 bg-slate-200 object-cover"
                 />
                 <span className="text-center text-lg italic text-slate-400">
-                    "I feel like I've learned as much from X as I did completing my masters. It's the first thing I read every morning."
+                    I feel like I&apos;ve learned as much from X as I did completing my masters. It&apos;s the first thing I read every morning.
                 </span>
                 <span className="text-center text-sm font-medium text-indigo-400">
                     Jenn F. - Marketing Director @ Square
@@ -43,7 +43,7 @@ const Hero: React.FC = () => {
                     className="pointer-events-none mx-auto h-32 w-32 rounded-full border-2 border-slate-700 bg-slate-200 object-cover"
                 />
                 <span className="text-center text-lg italic text-slate-400">
-                    "Can not believe this is free. If X was $5,000 a month, it would be worth every penny. I plan to name my next child after X."
+                    Can not believe this is free. If X was $5,000 a month, it would be worth every penny. I plan to name my next child after X.
                 </span>
                 <span className="text-center text-sm font-medium text-indigo-400">
                     Devin R. - Growth Marketing Lead @ OpenAI
@@ -93,9 +93,9 @@ const Hero: React.FC = () => {
         <section className="overflow-hidden bg-slate-900 px-8 py-24 text-slate-50">
             <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-16 md:grid-cols-2 md:gap-8">
                 <div>
-                    <h3 className="text-5xl font-black leading-[1.25] md:text-7xl">You don't know marketing</h3>
+                    <h3 className="text-5xl font-black leading-[1.25] md:text-7xl">You don&apos;t know marketing</h3>
                     <p className="mb-8 mt-4 text-lg text-slate-400">
-                        ...but we're going to help. We send out weekly breakdowns of exactly what's working and what's not for the largest companies in the world. It's free.
+                        ...but we&apos;re going to help. We send out weekly breakdowns of exactly what&apos;s working and what&apos;s not for the largest companies in the world. It&apos;s free.
                     </p>
                     <form className="flex items-center gap-2">
                         <input

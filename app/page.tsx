@@ -1,13 +1,10 @@
 "use client"
-import { useRef } from "react";
-import BackgroundBeamsDemo from "./components/HeroSection";
+
 import Hero from "./components/Hero"; 
-import About from "./components/About";
-import Products from "./components/Products";
-import { SignupFormDemo } from "./components/Contact";
+
 // import Hero from "./components/Hero3";
 import { TextParallaxContentExample } from "./components/TextParallaxContentExample";
-import Footer from "./components/footer";
+
 import Loading from "./components/loading";
 import { useEffect, useState } from "react";
 

@@ -127,7 +127,7 @@ const ExampleContent2: React.FC = () => (
    
     <div className="col-span-1 md:col-span-8">
       <p className="mb-4 text-4xl text-neutral-600 ">
-      Where we begin where other education apps fall short. We address the challenges parents face in their children's education. Experience tailored solutions 
+      Where we begin where other education apps fall short. We address the challenges parents face in their children&apos;s education. Experience tailored solutions 
       that make learning seamless and effective.
       </p>
      
