@@ -2,36 +2,42 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Antonio } from 'next/font/google';
+import { Antonio } from 'next/font/google'
 
 export const antonio = Antonio({
   subsets: ['latin'],
   display: 'swap',
-  weight: '400',
+  weight : '400'
 });
 
 const Hero: React.FC = () => {
     const initialCards: Record<string, JSX.Element> = {
         "1": (
-            <img
-                src="/img/Card.jpeg"
-                alt="Favome Card"
-                className="pointer-events-none mx-auto lg:h-[450px] rounded-2xl border-2 border-slate-700 object-cover backdrop-blur-md backdrop-filter"
-            />
+            <>
+                <img
+                    src="/img/Card.jpeg"
+                    alt="Favome Card"
+                    className="pointer-events-none mx-auto  h-[65vw] w-[50vw] md:h-[450px] md:w-[350px] rounded-2xl border-2 border-slate-700 object-cover backdrop-blur-md backdrop-filter"
+                />
+            </>
         ),
         "2": (
-            <img
-                src="/img/Card3.jpg"
-                alt="Favome Card"
-                className="pointer-events-none mx-auto h-[450px] w-[350px] border-2 border-slate-700 bg-slate-200 object-cover rounded-2xl"
-            />
+            <>
+                <img
+                    src="/img/Card3.jpg"
+                    alt="Favome Card"
+                    className="pointer-events-none  mx-auto h-[65vw] w-[50vw] md:h-[450px] md:w-[350px] border-2 border-slate-700 bg-slate-200 object-cover rounded-2xl"
+                />
+            </>
         ),
         "3": (
-            <img
-                src="/img/Card2.jpeg"
-                alt="Favome Card"
-                className="pointer-events-none mx-auto h-[450px] w-auto border-2 border-slate-700 bg-slate-200 object-cover rounded-2xl"
-            />
+            <>
+                <img
+                    src="/img/Card2.jpeg"
+                    alt="Favome Card"
+                    className="pointer-events-none  mx-auto h-[65vw] w-[50vw] md:h-[450px] md:w-[350px] border-2 border-slate-700 bg-slate-200 object-cover rounded-2xl"
+                />
+            </>
         ),
     };
 
@@ -71,10 +77,12 @@ const Hero: React.FC = () => {
         }, 500); // 500 milliseconds = 0.5 seconds
     };
 
+    
+
     return (
         <section className="overflow-hidden h-full bg-slate-900 px-8 py-24 text-slate-50">
             <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-16 md:grid-cols-2 md:gap-52">
-                <div className='py-10'>
+            <div className='py-10'>
                     <center>
                         <img src="/img/logo.png" className='h-16 justify-center' alt="" />
                         <h3 className={`text-7xl lg:text-9xl font-black leading-[1.25] md:text-7xl mr-[100px] flex items-center`}>
@@ -90,7 +98,7 @@ const Hero: React.FC = () => {
                         Unlock your unlimited potential today
                     </p>
                 </div>
-                <div className="relative h-[450px] w-[350px] mt-[50px] px-8">
+                <div className= " md:ml-0 relative  h-[65vw] w-[50vw] md:h-[450px] md:w-[350px]   mt-[50px] px-8">
                     <motion.div
                         layout
                         drag
@@ -100,7 +108,7 @@ const Hero: React.FC = () => {
                         onDragEnd={handleDragEnd}
                         animate={dragged ? {} : { x: 0, y: 0, rotate: -6 }}
                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                        className="absolute left-0 top-0 grid h-[450px] w-[350px] select-none place-content-center space-y-6 rounded-2xl border-2 border-slate-700 bg-slate-800/20 p-6 shadow-xl backdrop-blur-md cursor-grab active:cursor-grabbing"
+                        className=" md:ml-0 absolute left-0 top-0 grid  h-[65vw] w-[50vw] lg:h-[450px] lg:w-[350px]  select-none place-content-center space-y-6 rounded-2xl border-2 border-slate-700 bg-slate-800/20 p-6 shadow-xl backdrop-blur-md cursor-grab active:cursor-grabbing"
                         style={{
                             zIndex: 2,
                             userSelect: 'none',
@@ -116,24 +124,27 @@ const Hero: React.FC = () => {
                         initial={{ x: 200, rotate: 6 }}
                         animate={{ x: dragged ? 0 : 200, rotate: dragged ? 0 : 6 }}
                         transition={{ type: "spring", stiffness: 300, damping: 30, delay: dragged ? 0 : 0.2 }}
-                        className="absolute left-0 top-0 grid h-[450px] w-[350px] select-none place-content-center space-y-6 rounded-2xl border-2 border-slate-700 bg-slate-800/20 p-6 shadow-xl backdrop-blur-md"
+                        className="absolute left-0 top-0 grid  h-[65vw] w-[50vw] md:h-[450px] md:w-[350px]  select-none place-content-center space-y-6 rounded-2xl border-2 border-slate-700 bg-slate-800/20 p-6 shadow-xl backdrop-blur-md"
                         style={{ zIndex: 0 }}
                         onMouseEnter={handleClick}
                     >
                         {cards["2"]}
                     </motion.div>
+                    
                     <motion.div
                         layout
                         initial={{ x: 100, rotate: 0 }}
                         animate={{ x: dragged ? 0 : 100, rotate: dragged ? 0 : 0 }}
                         transition={{ type: "spring", stiffness: 300, damping: 30, delay: dragged ? 0 : 0.1 }}
-                        className="absolute left-0 top-0 grid h-[450px] w-[350px] select-none place-content-center space-y-6 rounded-2xl border-2 border-slate-700 bg-slate-800/20 p-6 shadow-xl backdrop-blur-md"
+                        className="absolute left-0 top-0 grid  h-[65vw] w-[50vw] md:h-[450px] md:w-[350px]  select-none place-content-center space-y-6 rounded-2xl border-2 border-slate-700 bg-slate-800/20 p-6 shadow-xl backdrop-blur-md"
                         style={{ zIndex: 1 }}
                         onMouseEnter={handleClick}
                     >
                         {cards["3"]}
                     </motion.div>
+                    
                 </div>
+                
             </div>
         </section>
     );
