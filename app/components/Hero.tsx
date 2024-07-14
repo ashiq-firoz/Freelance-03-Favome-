@@ -86,7 +86,7 @@ const Hero: React.FC = () => {
                     <center>
                         <img src="/img/logo.png" className='h-16 justify-center' alt="" />
                         <h3 className={`text-7xl lg:text-9xl font-black leading-[1.25] md:text-7xl mr-[100px] flex items-center`}>
-                            <span className={`${antonio.className} ml-12 lg:ml-0`}>&nbsp;&nbsp;FAVOME</span>
+                            <span className={`${antonio.className} ml-4 lg:ml-0`}>&nbsp;&nbsp;FAVOME</span>
                             <img src="/img/tm_bg.png" className='h-7 lg:h-8 ml-4 mb-8 lg:mb-12' alt="Trademark" />
                         </h3>
                         <p className={`${antonio.className} mb-8 text-xl lg:text-2xl text-slate-300`}>
