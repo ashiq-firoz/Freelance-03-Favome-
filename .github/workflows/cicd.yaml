@@ -1,0 +1,37 @@
+name: Deployment
+
+on:
+  push:
+    branches:
+      - "deployment"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Generate build number
+        id: buildnumber
+        uses: einaregilsson/build-number@v3
+        with:
+          token: ${{secrets.github_token}} 
+
+      - name: Generate deployment package
+        run: npm run next-install && npm run generate-zip
+
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v18
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          aws_secret_key: ${{ secrets.AWS_SECRET }}
+          application_name: Favome-WebApp
+          environment_name: Favome-WebApp-env
+          version_label: Favome-WebApp-${{ steps.buildnumber.outputs.build_number }}
+          region: ap-south-1
+          deployment_package: deploy.zip
