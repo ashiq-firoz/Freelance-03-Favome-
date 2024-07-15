@@ -85,7 +85,7 @@ const Hero: React.FC = () => {
             <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-2 md:grid-cols-2 md:gap-52">
                 <div className='py-10'>
                     <div className="flex flex-col items-center text-center">
-                        <img src="/img/logo.png" className="h-18" alt="Logo" />
+                        <img src="/img/logo.png" className="h-40" alt="Logo" />
                         <h3 className={`text-7xl lg:text-9xl font-black leading-[1.25] md:text-7xl flex items-center justify-center`}>
                             <span className={`${antonio.className} ml-4 lg:ml-0`}>&nbsp;FAVOME</span>
                             <img src="/img/tm_bg.png" className="h-7 lg:h-8 ml-4 mb-8 lg:mb-12" alt="Trademark" />
@@ -99,7 +99,7 @@ const Hero: React.FC = () => {
                         </p>
                     </div>
                 </div>
-                <div className=" md:ml-0 relative  h-[55vw] w-[44vw] md:h-[450px] md:w-[350px]   mt-[50px] px-8">
+                <div className=" md:ml-0 relative  h-[55vw] w-[44vw] md:h-[450px] md:w-[350px]    px-8">
                     <motion.div
                         layout
                         drag
