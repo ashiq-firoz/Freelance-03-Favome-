@@ -27,6 +27,6 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET }}
           application_name: Favome-WebApp
           environment_name: Favome-WebApp-env
-          version_label: Favome-WebApp-${{ steps.buildnumber.outputs.build_number }}
+          version_label: Favome-WebApp-${{ github.sha }}
           region: ap-south-1
           deployment_package: deploy.zip
