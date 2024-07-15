@@ -89,7 +89,7 @@ const Hero: React.FC = () => {
                             <span className={`${antonio.className} ml-4 lg:ml-0`}>&nbsp;&nbsp;FAVOME</span>
                             <img src="/img/tm_bg.png" className='h-7 lg:h-8 ml-4 mb-8 lg:mb-12' alt="Trademark" />
                         </h3>
-                        <p className={`${antonio.className} mb-8 text-xl lg:text-2xl text-slate-300`}>
+                        <p className={`${antonio.className} mb-8 mt-2 text-xl tracking-widest lg:text-4xl text-slate-300`}>
                             MY FAVORITE WAY
                         </p>
                     </center>
