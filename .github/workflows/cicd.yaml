@@ -23,8 +23,8 @@ jobs:
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v18
         with:
-          aws_access_key: ${{ env.favome.AWS_ACCESS_KEY }}
-          aws_secret_key: ${{ env.favome.AWS_SECRET }}
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          aws_secret_key: ${{ secrets.AWS_SECRET }}
           application_name: Favome-WebApp
           environment_name: Favome-WebApp-env
           version_label: Favome-WebApp-${{ steps.buildnumber.outputs.build_number }}
