@@ -58,7 +58,7 @@ const Hero: React.FC = () => {
                 // Update state to trigger re-render
                 setCards({ ...cards });
                 setSwapped(false);
-            }, 500); // delay of 500ms
+            }, 500); 
 
             return () => clearTimeout(timer);
         }
