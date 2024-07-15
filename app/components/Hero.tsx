@@ -4,10 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Antonio } from 'next/font/google'
 
+
 export const antonio = Antonio({
-  subsets: ['latin'],
-  display: 'swap',
-  weight : '400'
+    subsets: ['latin'],
+    display: 'swap',
+    weight: '400'
 });
 
 const Hero: React.FC = () => {
@@ -77,28 +78,28 @@ const Hero: React.FC = () => {
         }, 500); // 500 milliseconds = 0.5 seconds
     };
 
-    
+
 
     return (
         <section className="overflow-hidden h-full bg-slate-900 px-8 py-24 text-slate-50">
             <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-2 md:grid-cols-2 md:gap-52">
-            <div className='py-10'>
-                    <center>
-                        <img src="/img/logo.png" className='h-16 justify-center' alt="" />
-                        <h3 className={`text-7xl lg:text-9xl font-black leading-[1.25] md:text-7xl mr-[100px] flex items-center`}>
-                            <span className={`${antonio.className} ml-4 lg:ml-0`}>&nbsp;&nbsp;FAVOME</span>
-                            <img src="/img/tm_bg.png" className='h-7 lg:h-8 ml-4 mb-8 lg:mb-12' alt="Trademark" />
+                <div className='py-10'>
+                    <div className="flex flex-col items-center text-center">
+                        <img src="/img/logo.png" className="h-18" alt="Logo" />
+                        <h3 className={`text-7xl lg:text-9xl font-black leading-[1.25] md:text-7xl flex items-center justify-center`}>
+                            <span className={`${antonio.className} ml-4 lg:ml-0`}>&nbsp;FAVOME</span>
+                            <img src="/img/tm_bg.png" className="h-7 lg:h-8 ml-4 mb-8 lg:mb-12" alt="Trademark" />
                         </h3>
-                        <p className={`${antonio.className} mb-8 mt-2 text-xl tracking-widest lg:text-4xl text-slate-300`}>
+                        <p className={`${antonio.className} mb-8 text-xl mt-4 tracking-[0.55rem] lg:text-3xl text-slate-300`}>
                             MY FAVORITE WAY
                         </p>
-                    </center>
-                    <p className="mb-8 mt-4 text-lg lg:text-xl text-slate-400">
-                        Digitize your business, education, entertainment, career, and personal life with FAVOME. <br />
-                        Unlock your unlimited potential today
-                    </p>
+                        <p className="mb-8 mt-4 text-lg lg:text-xl text-slate-400">
+                            Digitize your business, education, entertainment, career, and personal life with FAVOME. <br />
+                            Unlock your unlimited potential today
+                        </p>
+                    </div>
                 </div>
-                <div className= " md:ml-0 relative  h-[55vw] w-[44vw] md:h-[450px] md:w-[350px]   mt-[50px] px-8">
+                <div className=" md:ml-0 relative  h-[55vw] w-[44vw] md:h-[450px] md:w-[350px]   mt-[50px] px-8">
                     <motion.div
                         layout
                         drag
@@ -130,7 +131,7 @@ const Hero: React.FC = () => {
                     >
                         {cards["2"]}
                     </motion.div>
-                    
+
                     <motion.div
                         layout
                         initial={{ x: 100, rotate: 0 }}
@@ -142,9 +143,9 @@ const Hero: React.FC = () => {
                     >
                         {cards["3"]}
                     </motion.div>
-                    
+
                 </div>
-                
+
             </div>
         </section>
     );
