@@ -17,10 +17,9 @@ jobs:
           node-version: "14"
 
       - name: Generate build number
-        id: buildnumber
-        uses: einaregilsson/build-number@v3
+        uses: onyxmueller/build-tag-number@v1
         with:
-          token: ${{secrets.github_token}} 
+          token: ${{secrets.github_token}}
 
       - name: Generate deployment package
         run: npm run next-install && npm run generate-zip
