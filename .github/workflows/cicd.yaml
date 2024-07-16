@@ -16,7 +16,6 @@ jobs:
         with:
           node-version: "20"
 
-
       - name: Generate deployment package
         run: npm run next-install && npm run generate-zip
 
@@ -30,3 +29,4 @@ jobs:
           version_label: Favome-WebApp-
           region: ap-south-1
           deployment_package: deploy.zip
+          use_existing_version_if_available: true
