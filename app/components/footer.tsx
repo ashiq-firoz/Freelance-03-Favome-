@@ -104,11 +104,17 @@ const Footer: React.FC = () => {
                                 Legal
                             </motion.h2>
                             <ul className="text-gray-500 dark:text-gray-400 font-medium">
-                                <li className="mb-4">
-                                    <a href="#" className="hover:underline">Privacy Policy</a>
+                                <li className="">
+                                    <a href="/policy" className="hover:underline">Privacy Policy</a>
                                 </li>
                                 <li>
-                                    <a href="#" className="hover:underline">Terms &amp; Conditions</a>
+                                    <a href="/terms" className="hover:underline">Terms &amp; Conditions</a>
+                                </li>
+                                <li>
+                                    <a href="/refund" className="hover:underline">Returns &amp; Refund Policy</a>
+                                </li>
+                                <li>
+                                    <a href="/shipping" className="hover:underline">Shipping Policy</a>
                                 </li>
                             </ul>
                         </div>
