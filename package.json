@@ -12,22 +12,29 @@
   },
   "dependencies": {
     "@tsparticles/react": "^3.0.0",
+    "axios": "^1.7.7",
     "clsx": "^2.1.1",
+    "crypto-js": "^4.2.0",
+    "firebase": "^10.13.1",
     "framer-motion": "^11.2.12",
+    "http-proxy-middleware": "^3.0.2",
     "mini-svg-data-uri": "^1.4.4",
-    "next": "14.2.4",
+    "next": "^14.2.12",
     "radix-ui": "^1.0.1",
     "react": "^18",
     "react-dom": "^18",
     "react-draggable": "^4.4.6",
     "react-icons": "^5.2.1",
     "tailwind-merge": "^2.3.0",
-    "tsparticles": "^3.5.0"
+    "tsparticles": "^3.5.0",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/uuid": "^10.0.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.4",
     "typescript": "^5"

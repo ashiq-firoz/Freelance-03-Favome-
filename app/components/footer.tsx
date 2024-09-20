@@ -111,11 +111,12 @@ const Footer: React.FC = () => {
                                     <a href="/terms" className="hover:underline">Terms &amp; Conditions</a>
                                 </li>
                                 <li>
-                                    <a href="/refund" className="hover:underline">Returns &amp; Refund Policy</a>
+                                    <a href="/refund" className="hover:underline">Refund Policy</a>
                                 </li>
+                                {/*
                                 <li>
                                     <a href="/shipping" className="hover:underline">Shipping Policy</a>
-                                </li>
+                                </li> */}
                             </ul>
                         </div>
 

@@ -1,41 +1,63 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
-import sha256 from "crypto-js/sha256";
 import axios from "axios";
 import { v4 as uuidv4 } from 'uuid';
+import { db } from '../firebase/firebase_config';
+import { collection, getDocs } from 'firebase/firestore';
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+  imageUrl: string;
+}
 
 const ProductPage: React.FC = () => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
-  const [cartItems, setCartItems] = useState<{ name: string, price: number }[]>([]);
+  const [cartItems, setCartItems] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [formData, setFormData] = useState({
     address: '',
     email: '',
     phone: '',
     name: "",
   });
-  const [notifications, setNotifications] = useState<{ [key: number]: string | null }>({});
+  const [notifications, setNotifications] = useState<{ [key: string]: string | null }>({});
 
-  const products = [
-    { name: "FAVOME ONLINE TUTION", price: 1, description: "One to One Tution by Favome Experts." },
-    { name: "FAVOME SPOKEN ENGLISH", price: 999, description: "Guided by experts from Universites." },
-    { name: "FAVOME DIGITAL MARKETING", price: 999, description: "For the new age of marketing" },
-    { name: "FAVOME YOGA", price: 999, description: "Live yoga classes. One to one training, by the best trainers" },
-  ];
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const productsCollection = collection(db, 'products');
+        const productSnapshot = await getDocs(productsCollection);
+        const productList = productSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        } as Product));
+        console.log(productList)
+        setProducts(productList);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
 
-  const handleAddToCart = (product: { name: string, price: number, description: string }, index: number) => {
+    fetchProducts();
+  }, []);
+
+  const handleAddToCart = (product: Product) => {
     setCartItems([...cartItems, product]);
     setNotifications({
       ...notifications,
-      [index]: "Item added"
+      [product.id]: "Item added"
     });
 
     setTimeout(() => {
       setNotifications(prevNotifications => ({
         ...prevNotifications,
-        [index]: null
+        [product.id]: null
       }));
     }, 2000);
   };
@@ -59,52 +81,39 @@ const ProductPage: React.FC = () => {
   };
 
   const makePayment = async () => {
-    // const transactionid = "Tr-" + uuidv4().toString().slice(-6);
-
-    // const payload = {
-    //   merchantId: process.env.NEXT_PUBLIC_MERCHANT_ID,
-    //   merchantTransactionId: transactionid,
-    //   merchantUserId: 'MUID-' + uuidv4().toString().slice(-6),
-    //   amount: totalAmount * 100, // Convert to paise
-    //   redirectUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/api/status/${transactionid}`,
-    //   redirectMode: "POST",
-    //   callbackUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/api/status/${transactionid}`,
-    //   mobileNumber: formData.phone,
-    //   paymentInstrument: {
-    //     type: "PAY_PAGE",
-    //   },
-    // };
-
-    // const dataPayload = JSON.stringify(payload);
-    // const dataBase64 = Buffer.from(dataPayload).toString("base64");
-    // const fullURL = dataBase64 + "/pg/v1/pay" + process.env.NEXT_PUBLIC_SALT_KEY;
-    // const dataSha256 = sha256(fullURL);
-    // const checksum = dataSha256 + "###" + process.env.NEXT_PUBLIC_SALT_INDEX;
-    // console.log(checksum)
-    // console.log(dataBase64)
-    const UAT_PAY_API_URL = "http://localhost:3002/order";
+    const UAT_PAY_API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
     let data = {
-      name : formData.name,
-      amount : totalAmount,
-      phone : formData.phone,
-      MID : 'MID' + Date.now(),
-      transactionId : 'T' + Date.now() 
-    }
-
-    try {
-      
-      await axios.post(UAT_PAY_API_URL,data).then(res=>{
-        console.log(res.data);
-        if(res.data.success === true){
-          window.location.href = res.data.data.instrumentResponse.redirectInfo.url;
+        name: formData.name,
+        amount: totalAmount,
+        phone: formData.phone,
+        MID: 'MID' + Date.now(),
+        transactionId: 'T' + Date.now()
+      }
+  
+      try {
+        const response = await fetch(UAT_PAY_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+          referrerPolicy: "unsafe-url"
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-      })
-
-    } catch (error) {
-      console.error("Payment error:", error);
-      // Handle error (e.g., show error message to user)
-    }
+  
+        const result = await response.json();
+        console.log(result);
+  
+        if (result.success === true) {
+          window.location.href = result.data.instrumentResponse.redirectInfo.url;
+        }
+      } catch (error) {
+        console.error("Payment error:", error);
+      }
   };
 
   const handleRemoveFromCart = (index: number) => {
@@ -123,7 +132,7 @@ const ProductPage: React.FC = () => {
       <div className="max-w-5xl mx-auto">
         <header className="relative flex items-center mb-8 py-10">
           <div className="flex-grow text-center">
-            <h1 className="text-2xl lg:text-4xl font-extrabold text-white">Favome Online Courses</h1>
+            <h1 className="text-2xl lg:text-4xl font-extrabold text-white">Favome Products</h1>
           </div>
           <button
             onClick={() => setIsCartModalOpen(true)}
@@ -135,21 +144,21 @@ const ProductPage: React.FC = () => {
         </header>
 
         <p className="mb-4 text-lg text-neutral-400 text-center">
-          Discover our exclusive range of courses. Each item is crafted with quality and care to meet your needs.
+          Discover our exclusive range of products. Each item is crafted with quality and care to meet your needs.
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {products.map((product, index) => (
-            <div key={index} className="relative bg-white shadow-md rounded-lg overflow-hidden w-full">
-              {notifications[index] && (
+          {products.map((product) => (
+            <div key={product.id} className="relative bg-white shadow-md rounded-lg overflow-hidden w-full">
+              {notifications[product.id] && (
                 <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white py-2 px-4 rounded shadow-lg z-10">
-                  {notifications[index]}
+                  {notifications[product.id]}
                 </div>
               )}
               
-              <center>
-                <img src={`/img/banners/c${index + 1}.jpeg`} alt={`Product ${index + 1}`} className="h-48 w-full object-cover" />
-              </center>
+              <div className="h-48 w-full overflow-hidden">
+                <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+              </div>
               <div className="p-6">
                 <h2 className="text-xl font-bold text-gray-800 mb-2">{product.name}</h2>
                 <p className="text-base text-gray-700 mb-4">
@@ -157,7 +166,7 @@ const ProductPage: React.FC = () => {
                 </p>
                 <p className="text-lg font-semibold text-gray-900 mb-4">MRP: ₹{product.price}</p>
                 <button
-                  onClick={() => handleAddToCart(product, index)}
+                  onClick={() => handleAddToCart(product)}
                   className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
                 >
                   Add to Cart

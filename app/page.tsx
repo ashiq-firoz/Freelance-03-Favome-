@@ -23,7 +23,7 @@ export default function Page() {
    <>
    {/* <BackgroundBeamsDemo/> */}
    <Hero/>
-   <div className='py-10 bg-white'>
+   <div className='py-10 bg-slate-900'>
    <TextParallaxContentExample/>
    </div>
 
