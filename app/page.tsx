@@ -1,13 +1,34 @@
-import { useRef } from "react";
+"use client"
 
+import Hero from "./components/Hero"; 
 
-export default function Home() {
+// import Hero from "./components/Hero3";
+import { TextParallaxContentExample } from "./components/TextParallaxContentExample";
+
+import Loading from "./components/loading";
+import { useEffect, useState } from "react";
+
+export default function Page() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulating content loading
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000); // Change this to a suitable delay or remove it
+
+    return () => clearTimeout(timer);
+  }, []);
   return (
    <>
-   <div className="bg-[url('/img/bg.jpg')] h-[80vh]">
-   <br /><br /><br />
-   <h1>Hello</h1>
+   {/* <BackgroundBeamsDemo/> */}
+   <Hero/>
+   <div className='py-10 bg-slate-900'>
+   <TextParallaxContentExample/>
    </div>
+
+   {/* <SignupFormDemo/> */}
+    
    </>
   );
 }
