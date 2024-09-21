@@ -1,8 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
-import axios from "axios";
-import { v4 as uuidv4 } from 'uuid';
 import { db } from '../firebase/firebase_config';
 import { collection, getDocs } from 'firebase/firestore';
 
@@ -25,6 +23,7 @@ const ProductPage: React.FC = () => {
     email: '',
     phone: '',
     name: "",
+    product: "",
   });
   const [notifications, setNotifications] = useState<{ [key: string]: string | null }>({});
 
@@ -37,7 +36,7 @@ const ProductPage: React.FC = () => {
           id: doc.id,
           ...doc.data()
         } as Product));
-        console.log(productList)
+        console.log(productList);
         setProducts(productList);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -48,7 +47,16 @@ const ProductPage: React.FC = () => {
   }, []);
 
   const handleAddToCart = (product: Product) => {
-    setCartItems([...cartItems, product]);
+    setCartItems(prevItems => {
+      const newItems = [...prevItems, product];
+      const productString = newItems.map(item => item.name).join(', ');
+      setFormData(prevData => ({
+        ...prevData,
+        product: productString
+      }));
+      return newItems;
+    });
+    
     setNotifications({
       ...notifications,
       [product.id]: "Item added"
@@ -60,6 +68,18 @@ const ProductPage: React.FC = () => {
         [product.id]: null
       }));
     }, 2000);
+  };
+
+  const handleRemoveFromCart = (index: number) => {
+    setCartItems(prevItems => {
+      const newItems = prevItems.filter((_, i) => i !== index);
+      const productString = newItems.map(item => item.name).join(', ');
+      setFormData(prevData => ({
+        ...prevData,
+        product: productString
+      }));
+      return newItems;
+    });
   };
 
   const handleCloseModal = () => {
@@ -84,40 +104,40 @@ const ProductPage: React.FC = () => {
     const UAT_PAY_API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
     let data = {
-        name: formData.name,
-        amount: totalAmount,
-        phone: formData.phone,
-        MID: 'MID' + Date.now(),
-        transactionId: 'T' + Date.now()
-      }
-  
-      try {
-        const response = await fetch(UAT_PAY_API_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-          referrerPolicy: "unsafe-url"
-        });
-  
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-  
-        const result = await response.json();
-        console.log(result);
-  
-        if (result.success === true) {
-          window.location.href = result.data.instrumentResponse.redirectInfo.url;
-        }
-      } catch (error) {
-        console.error("Payment error:", error);
-      }
-  };
+      name: formData.name,
+      address: formData.address,
+      contact: formData.phone,
+      email: formData.email,
+      product: formData.product,
+      amount: totalAmount,
+      phone: formData.phone,
+      MID: 'MID' + Date.now(),
+      transactionId: 'T' + Date.now()
+    }
 
-  const handleRemoveFromCart = (index: number) => {
-    setCartItems(cartItems.filter((_, i) => i !== index));
+    try {
+      const response = await fetch(UAT_PAY_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+        referrerPolicy: "unsafe-url"
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log(result);
+
+      if (result.success === true) {
+        window.location.href = result.data.instrumentResponse.redirectInfo.url;
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+    }
   };
 
   const handleProceedToCheckout = () => {
