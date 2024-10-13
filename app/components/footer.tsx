@@ -73,6 +73,11 @@ const Footer: React.FC = () => {
                                 </li>
                                 <li>
                                     <a href="#" className="hover:underline">Contact US</a>
+                                    
+                                </li>
+                                <li>
+                                    <a href="/login" className="hover:underline">Dashboard</a>
+                                    
                                 </li>
                             </ul>
                         </div>
@@ -135,7 +140,7 @@ const Footer: React.FC = () => {
                                 </li>
                                 <li>
                                     Phone : 0495-3101257<br></br>
-                                    Email:info@favome.com
+                                    info@favome.com
                                 </li>
                             </ul>
                         </div>

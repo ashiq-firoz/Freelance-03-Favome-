@@ -1,10 +1,10 @@
-"use client"
+"use client";
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { storage, db } from '../firebase/firebase_config';
 import { useAuth } from '../firebase/useAuth';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Edit3, Trash2 } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -16,9 +16,11 @@ interface Product {
 
 const DashboardWithProducts: React.FC = () => {
   const { user, loading, router } = useAuth();
-  const [isTableView, setIsTableView] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
+  const [selectedView, setSelectedView] = useState<'dashboard' | 'addProduct' | 'manageProducts'>('dashboard');
+  const [editMode, setEditMode] = useState(false);
+  const [editProductId, setEditProductId] = useState<string | null>(null);
 
   const [product, setProduct] = useState({
     name: '',
@@ -46,17 +48,9 @@ const DashboardWithProducts: React.FC = () => {
       });
       setProducts(productList);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error('Error fetching products:', error);
     }
   };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!user) {
-    return null;
-  }
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -120,33 +114,49 @@ const DashboardWithProducts: React.FC = () => {
       reader.readAsDataURL(file);
     });
   };
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setMessage('');
 
     try {
-      if (!product.image) {
+      if (!product.image && !editMode) {
         throw new Error('Please select an image');
       }
 
-      const resizedImage = await resizeImage(product.image);
-      const storageRef = ref(storage, `products/${Date.now()}_${product.image.name}`);
-      await uploadBytes(storageRef, resizedImage);
-      const imageUrl = await getDownloadURL(storageRef);
+      let imageUrl = '';
 
-      await addDoc(collection(db, 'products'), {
-        name: product.name,
-        description: product.description,
-        price: parseFloat(product.price),
-        imageUrl,
-        userId: user.uid,
-      });
+      if (product.image) {
+        const resizedImage = await resizeImage(product.image);
+        const storageRef = ref(storage, `products/${Date.now()}_${product.image.name}`);
+        await uploadBytes(storageRef, resizedImage);
+        imageUrl = await getDownloadURL(storageRef);
+      }
 
-      setMessage('Product added successfully!');
+      if (editMode && editProductId) {
+        const productRef = doc(db, 'products', editProductId);
+        await updateDoc(productRef, {
+          name: product.name,
+          description: product.description,
+          price: parseFloat(product.price),
+          ...(imageUrl && { imageUrl }), // Update imageUrl only if a new image is uploaded
+        });
+        setMessage('Product updated successfully!');
+      } else {
+        await addDoc(collection(db, 'products'), {
+          name: product.name,
+          description: product.description,
+          price: parseFloat(product.price),
+          imageUrl,
+          userId: user!.uid,
+        });
+        setMessage('Product added successfully!');
+      }
+
       setProduct({ name: '', description: '', price: '', image: null });
-      fetchProducts(); // Refresh the product list
+      setEditMode(false);
+      setEditProductId(null);
+      fetchProducts();
     } catch (error) {
       setMessage(`Error: ${(error as Error).message}`);
     } finally {
@@ -154,12 +164,34 @@ const DashboardWithProducts: React.FC = () => {
     }
   };
 
-  const toggleView = () => {
-    setIsTableView(!isTableView);
+  const handleEdit = (product: Product) => {
+    setEditMode(true);
+    setEditProductId(product.id);
+    setProduct({
+      name: product.name,
+      description: product.description,
+      price: product.price.toString(),
+      image: null,
+    });
+    setSelectedView('addProduct');
+  };
+
+  const handleDelete = async (productId: string) => {
+    try {
+      await deleteDoc(doc(db, 'products', productId));
+      setMessage('Product deleted successfully!');
+      fetchProducts(); // Refresh the product list after deletion
+    } catch (error) {
+      setMessage(`Error deleting product: ${(error as Error).message}`);
+    }
   };
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const getButtonClass = (view: 'dashboard' | 'addProduct' | 'manageProducts') => {
+    return selectedView === view ? 'bg-gray-700' : 'hover:bg-gray-700';
   };
 
   return (
@@ -170,10 +202,24 @@ const DashboardWithProducts: React.FC = () => {
           <X size={24} />
         </button>
         <nav>
-          <a href="#" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Dashboard</a>
-          <a href="#" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700" onClick={toggleView}>
-            {isTableView ? 'Add Product' : 'View Orders'}
-          </a>
+          <button
+            className={`block py-2.5 px-4 rounded transition duration-200 ${getButtonClass('dashboard')}`}
+            onClick={() => setSelectedView('dashboard')}
+          >
+            Dashboard
+          </button>
+          <button
+            className={`block py-2.5 px-4 rounded transition duration-200 ${getButtonClass('addProduct')}`}
+            onClick={() => setSelectedView('addProduct')}
+          >
+            Add Product
+          </button>
+          <button
+            className={`block py-2.5 px-4 rounded transition duration-200 ${getButtonClass('manageProducts')}`}
+            onClick={() => setSelectedView('manageProducts')}
+          >
+            Manage Products
+          </button>
         </nav>
       </div>
 
@@ -185,26 +231,28 @@ const DashboardWithProducts: React.FC = () => {
             <button onClick={toggleSidebar} className="md:hidden">
               <Menu size={24} />
             </button>
-            {/* <h1 className="text-xl font-semibold">Product Dashboard</h1> */}
           </div>
         </header>
 
         {/* Main content area */}
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-800 p-6">
-          {isTableView ? (
-           <div className="w-full overflow-hidden rounded-lg shadow-xs">
-           <div className="w-full overflow-x-auto">
-             <iframe 
-               src="https://docs.google.com/spreadsheets/d/1xvUgUdtpQkw28anhtKqSbqFWLzgWXa0Q9a9HwtkcNso/edit?usp=sharing"
-               className="w-full h-[70vh] border-0"
-               title="Product List"
-             ></iframe>
-           </div>
-         </div>
-          ) : (
+          {selectedView === 'dashboard' && (
+            <div className="w-full overflow-hidden rounded-lg shadow-xs">
+              <div className="w-full overflow-x-auto">
+                <iframe
+                  src="https://docs.google.com/spreadsheets/d/1xvUgUdtpQkw28anhtKqSbqFWLzgWXa0Q9a9HwtkcNso/edit?usp=sharing"
+                  className="w-full h-[70vh] border-0"
+                  title="Product List"
+                ></iframe>
+              </div>
+            </div>
+          )}
+          
+          {selectedView === 'addProduct' && (
             <div className="max-w-2xl mx-auto bg-gray-800 py-4">
-              <h2 className="text-2xl font-bold mb-4">Add New Product</h2>
+              <h2 className="text-2xl font-bold mb-4">{editMode ? 'Edit Product' : 'Add New Product'}</h2>
               <form onSubmit={handleSubmit} className="space-y-4 bg-white shadow-md rounded-lg p-6">
+                {/* Product form fields */}
                 <div>
                   <label htmlFor="name" className="block mb-1 font-medium text-black">Product Name</label>
                   <input
@@ -250,7 +298,6 @@ const DashboardWithProducts: React.FC = () => {
                     id="image"
                     name="image"
                     onChange={handleImageChange}
-                    required
                     accept="image/*"
                     className="w-full text-black px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
                   />
@@ -260,7 +307,7 @@ const DashboardWithProducts: React.FC = () => {
                   disabled={isLoading}
                   className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300 disabled:opacity-50"
                 >
-                  {isLoading ? 'Adding Product...' : 'Add Product'}
+                  {isLoading ? (editMode ? 'Updating Product...' : 'Adding Product...') : editMode ? 'Update Product' : 'Add Product'}
                 </button>
               </form>
               {message && (
@@ -268,6 +315,47 @@ const DashboardWithProducts: React.FC = () => {
                   {message}
                 </p>
               )}
+            </div>
+          )}
+
+          {selectedView === 'manageProducts' && (
+            <div className="w-full overflow-hidden rounded-lg shadow-xs">
+              <div className="w-full overflow-x-auto">
+                <table className="w-full whitespace-no-wrap">
+                  <thead>
+                    <tr className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b bg-gray-800">
+                      <th className="px-4 py-3">Product</th>
+                      <th className="px-4 py-3">Price</th>
+                      <th className="px-4 py-3">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y">
+                    {products.map((product) => (
+                      <tr key={product.id} className="text-gray-700">
+                        <td className="px-4 py-3">
+                          <p className="font-semibold">{product.name}</p>
+                          <p className="text-sm text-gray-600">{product.description}</p>
+                        </td>
+                        <td className="px-4 py-3 text-sm">₹{product.price.toFixed(2)}</td>
+                        <td className="px-4 py-3">
+                          <button
+                            onClick={() => handleEdit(product)}
+                            className="text-blue-500 hover:underline"
+                          >
+                            <Edit3 size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(product.id)}
+                            className="text-red-500 hover:underline ml-4"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
         </main>

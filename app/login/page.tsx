@@ -19,7 +19,7 @@ const LoginPage: React.FC = () => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push('/add-product'); // Redirect to the Add Product page after successful login
+      router.push('/dashboard'); 
     } catch (error) {
       setError('Failed to log in. Please check your email and password.');
       console.error('Login error:', error);
