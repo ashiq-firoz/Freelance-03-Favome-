@@ -4,7 +4,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { storage, db } from '../firebase/firebase_config';
 import { useAuth } from '../firebase/useAuth';
-import { Menu, X, Edit3, Trash2 } from 'lucide-react';
+import { Menu, X, Edit3, Trash2, FileText } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -14,11 +14,178 @@ interface Product {
   imageUrl: string;
 }
 
+// Update Bill interface to include timestamp
+interface Bill {
+  billNo: string;
+  invoiceDate: string;
+  status: string;
+  orderId: string;
+  paymentId: string;
+  products: string;
+  shippingAddress: string;
+  areaManager: string;
+  totalCost: number;
+  createdAt: Date;
+}
+
+// Add function to generate invoice HTML
+const generateInvoiceHTML = (bill: Bill) => {
+  return `<!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Payment Invoice #${bill.billNo}</title>
+    </head>
+    <!-- Rest of your HTML template with variables replaced -->
+    <body>
+       <table cellpadding="0" cellspacing="0" width="100%" style="max-width: 800px; margin: 0 auto; background-color: #ffffff;">
+      <tr>
+          <td style="padding: 20px;">
+              <!-- Header -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                      <td width="70%" style="vertical-align: top;">
+                          <h2 style="margin: 0; color: #333;">FAVOME PRIVATE LIMITED</h2>
+                          <p style="margin: 5px 0; font-size: 14px;">
+                              39/11A1,<br>
+                              Po. Opp. Ioc Petrol Pump,<br>
+                              Thiruvannur, Kozhikode, Kerala 673029<br>
+                              Email: favome2024@gmail.com<br>
+                              www.favome.com<br>
+                              Ph: +914953101384, +914953101163
+                          </p>
+                      </td>
+                      <td width="30%" style="text-align: right; vertical-align: top;">
+                          <img src="https://www.favome.com/img/logo2.png" alt="Favome Logo" style="width: 100px; height: auto;">
+                      </td>
+                  </tr>
+              </table>
+
+              <!-- Invoice Details -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 20px;">
+                  <tr>
+                      <td>
+                          <h1 style="color: #ff0000; text-align: center; margin: 20px 0;">Payment Invoice</h1>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                          <table width="100%" cellpadding="5" cellspacing="0">
+                              <tr>
+                                  <td>
+                                      <strong>Invoice No:</strong> ${bill.billNo}<br>
+                                      <strong>Order ID:</strong> ${bill.orderId}<br>
+                                      <strong>Payment ID:</strong> ${bill.paymentId}
+                                  </td>
+                                  <td style="text-align: right;">
+                                      <strong>Date:</strong> ${bill.invoiceDate}
+                                  </td>
+                              </tr>
+                          </table>
+                      </td>
+                  </tr>
+              </table>
+
+              <!-- Shipping Address -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 20px;">
+                  <tr>
+                      <td style="padding: 10px; background-color: #f9f9f9;">
+                          <strong>Shipping Address:</strong><br>
+                          ${bill.shippingAddress}
+                      </td>
+                  </tr>
+              </table>
+
+              <!-- Products Table -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 20px; border-collapse: collapse;">
+                  <tr style="background-color: #f0f0f0;">
+                      <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">#</th>
+                      <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Item & Description</th>
+                      <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Qty</th>
+                      <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Rate</th>
+                      <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Discount</th>
+                      <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Net Amount</th>
+                  </tr>
+                  <tr>
+              <td style="border: 1px solid #ddd; padding: 8px;">1</td>
+              <td style="border: 1px solid #ddd; padding: 8px;">${bill.products}</td>
+              <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">1</td>
+              <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${bill.totalCost}</td>
+              <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">0.00</td>
+              <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${bill.totalCost}</td>
+          </tr>
+              </table>
+
+              <!-- Totals -->
+              <table width="100%" cellpadding="5" cellspacing="0" style="margin-top: 20px;">
+                  <tr>
+                      <td width="70%"></td>
+                      <td width="30%">
+                          <table width="100%" cellpadding="5" cellspacing="0" style="border-collapse: collapse;">
+                              <tr>
+                                  <td><strong>Sub Total:</strong></td>
+                                  <td style="text-align: right;">₹ ${bill.totalCost}</td>
+                              </tr>
+                              <tr>
+                                  <td><strong>Total Discount:</strong></td>
+                                  <td style="text-align: right;">₹ 0.00 </td>
+                              </tr>
+                              <tr>
+                                  <td><strong>Total:</strong></td>
+                                  <td style="text-align: right;">₹ ${bill.totalCost}</td>
+                              </tr>
+                              
+                          </table>
+                      </td>
+                  </tr>
+              </table>
+
+              <!-- Footer -->
+              <table width="100%" cellpadding="5" cellspacing="0" style="margin-top: 20px;">
+                  <tr>
+                      <td>
+                          <p style="margin: 5px 0;">CARD DELIVERY WITH IN 14 DAYS</p>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td style="padding-top: 30px;">
+                          <table width="100%" cellpadding="5" cellspacing="0">
+                              <tr>
+                                  <td>
+                                      <strong>Area Manager Name:</strong> ${bill.areaManager}<br>
+                                  </td>
+                                  <td style="text-align: right; vertical-align: bottom;">
+                                      <div style="margin-top: 40px; border-top: 1px solid #000; width: 200px; float: right;">
+                                          <p style="margin: 5px 0; text-align: center;">Authorized Signature</p>
+                                      </div>
+                                  </td>
+                              </tr>
+                          </table>
+                      </td>
+                  </tr>
+              </table>
+          </td>
+      </tr>
+  </table>
+    </body>
+    </html>`;
+};
+
+// Update sorting function to use timestamp
+const sortBillsByDate = (bills: Bill[]) => {
+  return [...bills].sort((a, b) => {
+    const aDate = a.createdAt instanceof Date ? a.createdAt : new Date(a.createdAt);
+    const bDate = b.createdAt instanceof Date ? b.createdAt : new Date(b.createdAt);
+    return bDate.getTime() - aDate.getTime();
+  });
+};
+
 const DashboardWithProducts: React.FC = () => {
   const { user, loading, router } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
-  const [selectedView, setSelectedView] = useState<'dashboard' | 'addProduct' | 'manageProducts'>('dashboard');
+  const [selectedView, setSelectedView] = useState<'dashboard' | 'addProduct' | 'manageProducts' | 'bills'>('dashboard');
   const [editMode, setEditMode] = useState(false);
   const [editProductId, setEditProductId] = useState<string | null>(null);
 
@@ -30,6 +197,9 @@ const DashboardWithProducts: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [bills, setBills] = useState<Bill[]>([]);
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const [selectedBill, setSelectedBill] = useState<Bill | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -51,6 +221,25 @@ const DashboardWithProducts: React.FC = () => {
       console.error('Error fetching products:', error);
     }
   };
+
+  useEffect(() => {
+    const fetchBills = async () => {
+      try {
+        const billsCollection = collection(db, 'bills');
+        const billsSnapshot = await getDocs(billsCollection);
+        const billsList = billsSnapshot.docs.map(doc => ({
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate() || new Date(doc.data().invoiceDate)
+        } as Bill));
+        const sortedBills = sortBillsByDate(billsList);
+        setBills(sortedBills);
+      } catch (error) {
+        console.error('Error fetching bills:', error);
+      }
+    };
+
+    fetchBills();
+  }, []);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -190,7 +379,7 @@ const DashboardWithProducts: React.FC = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const getButtonClass = (view: 'dashboard' | 'addProduct' | 'manageProducts') => {
+  const getButtonClass = (view: 'dashboard' | 'addProduct' | 'manageProducts' | 'bills') => {
     return selectedView === view ? 'bg-gray-700' : 'hover:bg-gray-700';
   };
 
@@ -219,6 +408,12 @@ const DashboardWithProducts: React.FC = () => {
             onClick={() => setSelectedView('manageProducts')}
           >
             Manage Products
+          </button>
+          <button
+            className={`block py-2.5 px-4 rounded transition duration-200 ${getButtonClass('bills')}`}
+            onClick={() => setSelectedView('bills')}
+          >
+            Bills
           </button>
         </nav>
       </div>
@@ -335,6 +530,7 @@ const DashboardWithProducts: React.FC = () => {
                         <td className="px-4 py-3">
                           <p className="font-semibold">{product.name}</p>
                           <p className="text-sm text-gray-600">{product.description}</p>
+                            <a href={"https://www.favome.com/product?product="+product.name} className="text-sm text-gray-600">https://www.favome.com/product?product={product.name}</a>
                         </td>
                         <td className="px-4 py-3 text-sm">₹{product.price.toFixed(2)}</td>
                         <td className="px-4 py-3">
@@ -358,8 +554,111 @@ const DashboardWithProducts: React.FC = () => {
               </div>
             </div>
           )}
+          {selectedView === 'bills' && (
+            <div className="w-full overflow-hidden rounded-lg shadow-xs">
+              <div className="w-full overflow-x-auto">
+                <table className="w-full whitespace-no-wrap">
+                  <thead>
+                    <tr className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b bg-gray-50">
+                      <th className="px-4 py-3">Bill No</th>
+                      <th className="px-4 py-3">Date</th>
+                      <th className="px-4 py-3">Status</th>
+                      <th className="px-4 py-3">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y">
+                    {bills.map((bill) => (
+                      <tr key={bill.billNo} className="text-gray-700">
+                        <td className="px-4 py-3">{bill.billNo}</td>
+                        <td className="px-4 py-3">{bill.invoiceDate}</td>
+                        <td className="px-4 py-3">
+                          <span className={`px-2 py-1 font-semibold leading-tight rounded-full ${
+                            bill.status === 'paid' ? 'text-green-700 bg-green-100' : 'text-orange-700 bg-orange-100'
+                          }`}>
+                            {bill.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <button
+                            onClick={() => {
+                              setSelectedBill(bill);
+                              setShowInvoiceModal(true);
+                            }}
+                            className="px-3 py-1 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
+                          >
+                            View Invoice
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+          <div className="mt-8">
+            <h2 className="text-2xl font-bold mb-4 text-white">Recent Bills</h2>
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Bill No
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {bills.map((bill) => (
+                    <tr key={bill.billNo}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {bill.billNo}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {bill.invoiceDate}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {bill.status}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </main>
       </div>
+      {/* Invoice Modal */}
+      {showInvoiceModal && selectedBill && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="relative w-full max-w-4xl bg-white rounded-lg shadow-lg">
+            <div className="flex justify-between items-center p-4 border-b">
+              <h3 className="text-xl font-semibold">Invoice #{selectedBill.billNo}</h3>
+              <button
+                onClick={() => {
+                  setShowInvoiceModal(false);
+                  setSelectedBill(null);
+                }}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <div className="p-4 h-[80vh] overflow-auto">
+              <iframe
+                srcDoc={generateInvoiceHTML(selectedBill)}
+                className="w-full h-full border-0"
+                title={`Invoice ${selectedBill.billNo}`}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

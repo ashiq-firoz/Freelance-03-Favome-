@@ -11,6 +11,7 @@
     "next-install": "sh ./scripts/next-install.sh"
   },
   "dependencies": {
+    "@react-pdf/renderer": "^4.1.4",
     "@tsparticles/react": "^3.0.0",
     "axios": "^1.7.7",
     "clsx": "^2.1.1",
@@ -40,7 +41,7 @@
     "tailwindcss": "^3.4.4",
     "typescript": "^5"
   },
-   "engines": {
+  "engines": {
     "node": "20"
-  },
+  }
 }

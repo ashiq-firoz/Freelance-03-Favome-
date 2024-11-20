@@ -4,6 +4,7 @@ import "./globals.css";
 import NavBarComponent from "./components/Navbar";
 import Footer from "./components/footer";
 
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -16,6 +17,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.className} bg-gray-900`}>
