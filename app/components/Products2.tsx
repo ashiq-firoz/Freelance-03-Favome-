@@ -484,12 +484,14 @@ const ProductPage: React.FC = () => {
               <p className="text-lg font-semibold text-gray-900 mb-4">
                 MRP: ₹{product.price}
               </p>
+              <a href={`/product?product=${product.name}`} className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Buy</a>
+{/*               
               <button
                 onClick={() => handleAddToCart(product)}
                 className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
               >
                 Add to Cart
-              </button>
+              </button> */}
             </div>
           </div>
         ))}

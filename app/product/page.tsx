@@ -10,6 +10,8 @@ interface Product {
   price: number;
   description: string;
   imageUrl: string;
+  mrp : number;
+  discount:number;
 }
 
 const SingleProductPage: React.FC = () => {
@@ -205,7 +207,7 @@ const SingleProductPage: React.FC = () => {
       "description": process.env.NEXT_PUBLIC_SEVER_STATUS,
       "image": process.env.NEXT_PUBLIC_LOGO_URL,
       "order_id": response_one.orderid.id,
-      "callback_url":`${UAT_PAY_API_URL}/verifypayment?customerName=${data.customerName}&total=${data.amount}&billno=${billno}&happyFamilyCardNumber=${data.happyFamilyCardNumber}&haveHappyFamilyCard=${data.haveHappyFamilyCard}&orderId=${response_one.orderid.id}&addressLine1=${data.addressLine1}&city=${data.city}&state=${data.state}&pincode=${data.pincode}&logourl=${logourl}&product=${data.products}&mobile=${data.mobile}&companyEmail=${data.companyEmail}&whatsapp=${data.whatsapp}&googleProfileLink=${data.googleProfileLink}&areaManager=${data.areaManager}&remarks=${data.remarks}&Panchayath_Corporation_Municipality=${data.Panchayath_Corporation_Municipality}&`,
+      "callback_url":`${UAT_PAY_API_URL}/verifypayment?customerName=${data.customerName}&discount=${product?.discount}&mrp=${product?.mrp}&total=${data.amount}&billno=${billno}&happyFamilyCardNumber=${data.happyFamilyCardNumber}&haveHappyFamilyCard=${data.haveHappyFamilyCard}&orderId=${response_one.orderid.id}&addressLine1=${data.addressLine1}&city=${data.city}&state=${data.state}&pincode=${data.pincode}&logourl=${logourl}&product=${data.products}&mobile=${data.mobile}&companyEmail=${data.companyEmail}&whatsapp=${data.whatsapp}&googleProfileLink=${data.googleProfileLink}&areaManager=${data.areaManager}&remarks=${data.remarks}&Panchayath_Corporation_Municipality=${data.Panchayath_Corporation_Municipality}&`,
       "notes": {
         "email": data.companyEmail || "",
         "phone": data.whatsapp,

@@ -6,11 +6,15 @@ import { storage, db } from '../firebase/firebase_config';
 import { useAuth } from '../firebase/useAuth';
 import { Menu, X, Edit3, Trash2, FileText } from 'lucide-react';
 
+// Update Product interface
 interface Product {
   id: string;
   name: string;
   description: string;
   price: number;
+  mrp: number;
+  discount: number;
+  tax: number; // Commented for now
   imageUrl: string;
 }
 
@@ -189,10 +193,14 @@ const DashboardWithProducts: React.FC = () => {
   const [editMode, setEditMode] = useState(false);
   const [editProductId, setEditProductId] = useState<string | null>(null);
 
+  // Update product state initialization
   const [product, setProduct] = useState({
     name: '',
     description: '',
-    price: '',
+    price: '0.00',
+    mrp: '0.00',
+    discount: '0.00',
+    tax: '0.00', // Commented for now
     image: null as File | null,
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -209,14 +217,25 @@ const DashboardWithProducts: React.FC = () => {
     }
   }, [user, loading, router]);
 
+  // Update fetchProducts to handle existing products without new fields
   const fetchProducts = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, 'products'));
-      const productList: Product[] = [];
-      querySnapshot.forEach((doc) => {
-        productList.push({ id: doc.id, ...(doc.data() as Omit<Product, 'id'>) });
+      const productsCollection = collection(db, 'products');
+      const productsSnapshot = await getDocs(productsCollection);
+      const productsList = productsSnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          name: data.name,
+          description: data.description,
+          price: data.price || 0,
+          mrp: data.mrp || 0,
+          discount: data.discount || 0,
+          tax: data.tax || 0, // Commented for now
+          imageUrl: data.imageUrl,
+        } as Product;
       });
-      setProducts(productList);
+      setProducts(productsList);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
@@ -241,9 +260,21 @@ const DashboardWithProducts: React.FC = () => {
     fetchBills();
   }, []);
 
+  // Update handleInputChange to calculate price
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setProduct({ ...product, [name]: value });
+    setProduct((prevProduct) => {
+      const updatedProduct = { ...prevProduct, [name]: value };
+
+      if (name === 'mrp' || name === 'discount') {
+        const mrp = parseFloat(updatedProduct.mrp);
+        const discount = parseFloat(updatedProduct.discount);
+        const price = mrp - discount;
+        updatedProduct.price = price.toFixed(2);
+      }
+
+      return updatedProduct;
+    });
   };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -328,6 +359,9 @@ const DashboardWithProducts: React.FC = () => {
           name: product.name,
           description: product.description,
           price: parseFloat(product.price),
+          mrp: parseFloat(product.mrp),
+          discount: parseFloat(product.discount),
+          tax: parseFloat(product.tax), // Commented for now
           ...(imageUrl && { imageUrl }), // Update imageUrl only if a new image is uploaded
         });
         setMessage('Product updated successfully!');
@@ -336,13 +370,16 @@ const DashboardWithProducts: React.FC = () => {
           name: product.name,
           description: product.description,
           price: parseFloat(product.price),
+          mrp: parseFloat(product.mrp),
+          discount: parseFloat(product.discount),
+          tax: parseFloat(product.tax), // Commented for now
           imageUrl,
           userId: user!.uid,
         });
         setMessage('Product added successfully!');
       }
 
-      setProduct({ name: '', description: '', price: '', image: null });
+      setProduct({ name: '', description: '', price: '0.00', mrp: '0.00', discount: '0.00', tax: '0.00', image: null });
       setEditMode(false);
       setEditProductId(null);
       fetchProducts();
@@ -353,6 +390,7 @@ const DashboardWithProducts: React.FC = () => {
     }
   };
 
+  // Update handleEdit to include new fields
   const handleEdit = (product: Product) => {
     setEditMode(true);
     setEditProductId(product.id);
@@ -360,6 +398,9 @@ const DashboardWithProducts: React.FC = () => {
       name: product.name,
       description: product.description,
       price: product.price.toString(),
+      mrp: product.mrp?.toString() || '0.00',
+      discount: product.discount?.toString() || '0.00',
+      tax: product.tax?.toString() || '0.00', // Commented for now
       image: null,
     });
     setSelectedView('addProduct');
@@ -472,19 +513,56 @@ const DashboardWithProducts: React.FC = () => {
                     rows={4}
                   ></textarea>
                 </div>
-                <div>
-                  <label htmlFor="price" className="block mb-1 font-medium text-black">Price</label>
-                  <input
-                    type="number"
-                    id="price"
-                    name="price"
-                    value={product.price}
-                    onChange={handleInputChange}
-                    required
-                    min="0"
-                    step="0.01"
-                    className="w-full text-black px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                  />
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label htmlFor="mrp" className="block text-black font-medium">MRP</label>
+                    <input
+                      type="number"
+                      id="mrp"
+                      name="mrp"
+                      value={product.mrp}
+                      onChange={handleInputChange}
+                      className="w-full p-2 border rounded text-black"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="discount" className="block text-black font-medium">Discount Amount</label>
+                    <input
+                      type="number"
+                      id="discount"
+                      name="discount"
+                      value={product.discount}
+                      onChange={handleInputChange}
+                      className="w-full p-2 border rounded text-black"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="price" className="block text-black font-medium">Price</label>
+                    <input
+                      type="number"
+                      id="price"
+                      name="price"
+                      value={product.price}
+                      onChange={handleInputChange}
+                      className="w-full p-2 border rounded text-black"
+                      readOnly
+                    />
+                  </div>
+
+                  {/* Commented for now */}
+                  {/* <div className="space-y-2">
+                    <label htmlFor="tax" className="block text-black font-medium">Tax</label>
+                    <input
+                      type="number"
+                      id="tax"
+                      name="tax"
+                      value={product.tax}
+                      onChange={handleInputChange}
+                      className="w-full p-2 border rounded text-black"
+                    />
+                  </div> */}
                 </div>
                 <div>
                   <label htmlFor="image" className="block mb-1 font-medium text-black">Product Image</label>
