@@ -152,6 +152,7 @@ const SingleProductPage: React.FC = () => {
       
       const billData = {
         billNo,
+        name:formData.customerName,
         areaManager: formData.areaManager,
         products: product?.name,
         shippingAddress,

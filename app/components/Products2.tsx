@@ -9,6 +9,8 @@ interface Product {
   id: string;
   name: string;
   price: number;
+  mrp:number;
+  discount : number;
   description: string;
   imageUrl: string;
 }
@@ -160,15 +162,34 @@ const ProductPage: React.FC = () => {
     });
   };
 
+  // Add validation function
+  const validateInput = (value: string, maxLength: number = 50): string => {
+    return value.toUpperCase().slice(0, maxLength);
+  };
+
+  // Update handleInputChange
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ) => {
     const { name, value } = e.target;
+    
+    // Skip transformation for select elements
+    if (e.target instanceof HTMLSelectElement) {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+      return;
+    }
+
+    // Transform input to uppercase and limit length
+    const transformedValue = validateInput(value);
+    
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: transformedValue,
     });
   };
 
@@ -223,11 +244,63 @@ const ProductPage: React.FC = () => {
     return "";
   };
 
+  const createBill = async () => {
+    try {
+      const billsCollection = collection(db, 'bills');
+      
+      // Get current bill count for numbering
+      const countQuery = query(billsCollection, orderBy('billNo', 'desc'), limit(1));
+      const countSnap = await getDocs(countQuery);
+      const lastBill = countSnap.docs[0]?.data();
+      const nextBillCount = lastBill ? parseInt(lastBill.billNo.split('-')[1]) + 1 : 1;
+      const billNo = `BILL-${nextBillCount.toString().padStart(4, '0')}`;
+  
+      const shippingAddress = `${formData.addressLine1}<br>${formData.city}, ${formData.state}<br>${formData.pincode}`;
+      
+      // Calculate total cost from cart items
+      const totalCost = cartItems.reduce((sum, item) => sum + item.price, 0);
+  
+      const billData = {
+        billNo,
+        name: formData.customerName,
+        areaManager: formData.areaManager,
+        products: cartItems.map(item => item.name).join(", "),
+        shippingAddress,
+        totalCost,
+        invoiceDate: new Date().toLocaleDateString('en-GB', {
+          day: 'numeric',
+          month: 'short',
+          year: '2-digit'
+        }),
+        status: 'pending',
+        items: cartItems.map(item => ({
+          name: item.name,
+          price: item.price,
+          discount:item.discount,
+          mrp: item.mrp,
+          quantity: 1
+        }))
+      };
+  
+      const billRef = await addDoc(billsCollection, billData);
+      return { id: billRef.id, no: billNo };
+    } catch (error) {
+      console.error('Error creating bill:', error);
+      throw error;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await makePayment2();
-    setLoading(false);
+    try {
+      const billDetails = await createBill();
+      await makePayment2(billDetails);
+    } catch (error) {
+      console.error('Error in submission:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   function loadScript(src: string) {
@@ -244,7 +317,7 @@ const ProductPage: React.FC = () => {
     });
   }
 
-  const makePayment2 = async () => {
+  const makePayment2 = async (billDetails: { id: string; no: string }) => {
     const res = await loadScript(
       "https://checkout.razorpay.com/v1/checkout.js"
     );
@@ -484,14 +557,14 @@ const ProductPage: React.FC = () => {
               <p className="text-lg font-semibold text-gray-900 mb-4">
                 MRP: ₹{product.price}
               </p>
-              <a href={`/product?product=${product.name}`} className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Buy</a>
-{/*               
+              {/* <a href={`/product?product=${product.name}`} className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Buy</a> */}
+              
               <button
                 onClick={() => handleAddToCart(product)}
                 className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
               >
                 Add to Cart
-              </button> */}
+              </button>
             </div>
           </div>
         ))}
@@ -571,9 +644,11 @@ const ProductPage: React.FC = () => {
                     type="text"
                     id="customerName"
                     name="customerName"
-                    className="w-full p-2 border rounded text-black"
+                    className="w-full p-2 border rounded text-black uppercase"
                     onChange={handleInputChange}
                     required
+                    maxLength={50}
+                    style={{ textTransform: 'uppercase' }}
                   />
                 </div>
                 {hasBizBooster && (
@@ -588,9 +663,11 @@ const ProductPage: React.FC = () => {
                       type="text"
                       id="companyName"
                       name="companyName"
-                      className="w-full p-2 border rounded text-black"
+                      className="w-full p-2 border rounded text-black uppercase"
                       onChange={handleInputChange}
                       required
+                      maxLength={50}
+                      style={{ textTransform: 'uppercase' }}
                     />
                   </div>
                 )}

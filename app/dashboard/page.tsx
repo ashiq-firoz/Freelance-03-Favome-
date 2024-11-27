@@ -4,7 +4,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { storage, db } from '../firebase/firebase_config';
 import { useAuth } from '../firebase/useAuth';
-import { Menu, X, Edit3, Trash2, FileText } from 'lucide-react';
+import { Menu, X, Edit3, Trash2, FileText, Plus } from 'lucide-react';
 
 // Update Product interface
 interface Product {
@@ -22,18 +22,47 @@ interface Product {
 interface Bill {
   billNo: string;
   invoiceDate: string;
+  items: Array<any>;
   status: string;
   orderId: string;
   paymentId: string;
   products: string;
   shippingAddress: string;
+  name:string;
   areaManager: string;
   totalCost: number;
   createdAt: Date;
 }
 
+// Add types
+type JobType = 'full-time' | 'part-time' | 'intern';
+type LocationType = 'remote' | 'on-site';
+
+interface Job {
+  id: string;
+  title: string;
+  description: string;
+  type: JobType;
+  location: LocationType;
+  link: string;
+  postedDate: string;
+}
+
 // Add function to generate invoice HTML
 const generateInvoiceHTML = (bill: Bill) => {
+  const itemsHTML = bill.items.map((item, index) => `
+    <tr>
+      <td style="border: 1px solid #ddd; padding: 8px;">${index + 1}</td>
+      <td style="border: 1px solid #ddd; padding: 8px;">${item.name}</td>
+      <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${item.quantity}</td>
+      <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${item.mrp}</td>
+      <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${item.discount}</td>
+      <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${item.price}</td>
+    </tr>
+  `).join('');
+
+  const totalDiscount = bill.items.reduce((sum, item) => sum + item.discount, 0);
+
   return `<!DOCTYPE html>
     <html>
     <head>
@@ -41,7 +70,6 @@ const generateInvoiceHTML = (bill: Bill) => {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Payment Invoice #${bill.billNo}</title>
     </head>
-    <!-- Rest of your HTML template with variables replaced -->
     <body>
        <table cellpadding="0" cellspacing="0" width="100%" style="max-width: 800px; margin: 0 auto; background-color: #ffffff;">
       <tr>
@@ -98,6 +126,10 @@ const generateInvoiceHTML = (bill: Bill) => {
                           <strong>Shipping Address:</strong><br>
                           ${bill.shippingAddress}
                       </td>
+                      <td style="padding: 10px; background-color: #f9f9f9;">
+                          <strong>Name:</strong><br>
+                          ${bill.name}
+                      </td>
                   </tr>
               </table>
 
@@ -111,14 +143,7 @@ const generateInvoiceHTML = (bill: Bill) => {
                       <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Discount</th>
                       <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Net Amount</th>
                   </tr>
-                  <tr>
-              <td style="border: 1px solid #ddd; padding: 8px;">1</td>
-              <td style="border: 1px solid #ddd; padding: 8px;">${bill.products}</td>
-              <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">1</td>
-              <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${bill.totalCost}</td>
-              <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">0.00</td>
-              <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${bill.totalCost}</td>
-          </tr>
+                  ${itemsHTML}
               </table>
 
               <!-- Totals -->
@@ -133,7 +158,7 @@ const generateInvoiceHTML = (bill: Bill) => {
                               </tr>
                               <tr>
                                   <td><strong>Total Discount:</strong></td>
-                                  <td style="text-align: right;">₹ 0.00 </td>
+                                  <td style="text-align: right;">₹ ${totalDiscount.toFixed(2)}</td>
                               </tr>
                               <tr>
                                   <td><strong>Total:</strong></td>
@@ -189,7 +214,7 @@ const DashboardWithProducts: React.FC = () => {
   const { user, loading, router } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
-  const [selectedView, setSelectedView] = useState<'dashboard' | 'addProduct' | 'manageProducts' | 'bills'>('dashboard');
+  const [selectedView, setSelectedView] = useState<'dashboard' | 'addProduct' | 'manageProducts' | 'bills' | 'jobs'>('dashboard');
   const [editMode, setEditMode] = useState(false);
   const [editProductId, setEditProductId] = useState<string | null>(null);
 
@@ -208,6 +233,19 @@ const DashboardWithProducts: React.FC = () => {
   const [bills, setBills] = useState<Bill[]>([]);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [selectedBill, setSelectedBill] = useState<Bill | null>(null);
+
+  // Add to state variables
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [showJobModal, setShowJobModal] = useState(false);
+  const [editJobId, setEditJobId] = useState<string | null>(null);
+  const [jobFormData, setJobFormData] = useState<Omit<Job, 'id'>>({
+    title: '',
+    description: '',
+    type: 'full-time',
+    location: 'on-site',
+    link: '',
+    postedDate: new Date().toISOString().split('T')[0]
+  });
 
   useEffect(() => {
     if (!loading && !user) {
@@ -259,6 +297,66 @@ const DashboardWithProducts: React.FC = () => {
 
     fetchBills();
   }, []);
+
+  // Add fetch jobs function
+  const fetchJobs = async () => {
+    const jobsCollection = collection(db, 'jobs');
+    const snapshot = await getDocs(jobsCollection);
+    const jobsList = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    } as Job));
+    setJobs(jobsList.sort((a, b) => new Date(b.postedDate).getTime() - new Date(a.postedDate).getTime()));
+  };
+
+  // Add job handlers
+  const handleAddJob = async () => {
+    try {
+      const jobsCollection = collection(db, 'jobs');
+      await addDoc(jobsCollection, jobFormData);
+      await fetchJobs();
+      setShowJobModal(false);
+      resetJobForm();
+    } catch (error) {
+      console.error('Error adding job:', error);
+    }
+  };
+
+  const handleEditJob = async () => {
+    if (!editJobId) return;
+    try {
+      const jobRef = doc(db, 'jobs', editJobId);
+      await updateDoc(jobRef, jobFormData);
+      await fetchJobs();
+      setShowJobModal(false);
+      resetJobForm();
+    } catch (error) {
+      console.error('Error updating job:', error);
+    }
+  };
+
+  const handleDeleteJob = async (jobId: string) => {
+    if (confirm('Are you sure you want to delete this job?')) {
+      try {
+        await deleteDoc(doc(db, 'jobs', jobId));
+        await fetchJobs();
+      } catch (error) {
+        console.error('Error deleting job:', error);
+      }
+    }
+  };
+
+  const resetJobForm = () => {
+    setJobFormData({
+      title: '',
+      description: '',
+      type: 'full-time',
+      location: 'on-site',
+      link: '',
+      postedDate: new Date().toISOString().split('T')[0]
+    });
+    setEditJobId(null);
+  };
 
   // Update handleInputChange to calculate price
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -420,9 +518,40 @@ const DashboardWithProducts: React.FC = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const getButtonClass = (view: 'dashboard' | 'addProduct' | 'manageProducts' | 'bills') => {
+  const getButtonClass = (view: 'dashboard' | 'addProduct' | 'manageProducts' | 'bills' | 'jobs') => {
     return selectedView === view ? 'bg-gray-700' : 'hover:bg-gray-700';
   };
+
+
+// Update addProduct click handler
+const handleAddProductClick = () => {
+  setProduct({
+    name: '',
+    description: '',
+    price: '0.00',
+    mrp: '0.00',
+    discount: '0.00',
+    tax: '0.00',
+    image: null
+  });
+  setEditProductId(null);
+  setSelectedView('addProduct');
+};
+
+// Update edit product click handler
+const handleEditProduct = (productToEdit: Product) => {
+  setProduct({
+    name: productToEdit.name,
+    description: productToEdit.description,
+    price: productToEdit.price.toString(),
+    mrp: productToEdit.mrp.toString(),
+    discount: productToEdit.discount.toString(),
+    tax: productToEdit.tax.toString(),
+    image: null
+  });
+  setEditProductId(productToEdit.id);
+  setSelectedView('addProduct');
+};
 
   return (
     <div className="flex h-screen bg-gray-500">
@@ -440,7 +569,7 @@ const DashboardWithProducts: React.FC = () => {
           </button>
           <button
             className={`block py-2.5 px-4 rounded transition duration-200 ${getButtonClass('addProduct')}`}
-            onClick={() => setSelectedView('addProduct')}
+            onClick={() => handleAddProductClick()}
           >
             Add Product
           </button>
@@ -455,6 +584,12 @@ const DashboardWithProducts: React.FC = () => {
             onClick={() => setSelectedView('bills')}
           >
             Bills
+          </button>
+          <button
+            className={`block py-2.5 px-4 rounded transition duration-200 ${getButtonClass('jobs')}`}
+            onClick={() => setSelectedView('jobs')}
+          >
+            Jobs
           </button>
         </nav>
       </div>
@@ -674,41 +809,182 @@ const DashboardWithProducts: React.FC = () => {
               </div>
             </div>
           )}
-          <div className="mt-8">
-            <h2 className="text-2xl font-bold mb-4 text-white">Recent Bills</h2>
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Bill No
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {bills.map((bill) => (
-                    <tr key={bill.billNo}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {bill.billNo}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {bill.invoiceDate}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {bill.status}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          {selectedView === 'jobs' && (
+            <div className="container px-6 mx-auto">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-semibold text-white">Manage Job Openings</h2>
+                <button
+                  onClick={() => {
+                    resetJobForm();
+                    setShowJobModal(true);
+                  }}
+                  className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                  <Plus size={20} className="mr-2" />
+                  Add New Job
+                </button>
+              </div>
+
+              <div className="w-full overflow-hidden rounded-lg shadow-xs">
+                <div className="w-full overflow-x-auto">
+                  <table className="w-full whitespace-no-wrap">
+                    <thead>
+                      <tr className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b bg-gray-800">
+                        <th className="px-4 py-3">Title</th>
+                        <th className="px-4 py-3">Type</th>
+                        <th className="px-4 py-3">Location</th>
+                        <th className="px-4 py-3">Posted Date</th>
+                        <th className="px-4 py-3">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y">
+                      {jobs.map((job) => (
+                        <tr key={job.id} className="text-gray-700">
+                          <td className="px-4 py-3">
+                            <div className="flex flex-col">
+                              <p className="font-semibold">{job.title}</p>
+                              <p className="text-sm text-gray-600">{job.description}</p>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 text-sm capitalize">{job.type}</td>
+                          <td className="px-4 py-3 text-sm capitalize">{job.location}</td>
+                          <td className="px-4 py-3 text-sm">{new Date(job.postedDate).toLocaleDateString()}</td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center space-x-4">
+                              <button
+                                onClick={() => {
+                                  setJobFormData(job);
+                                  setEditJobId(job.id);
+                                  setShowJobModal(true);
+                                }}
+                                className="text-blue-500 hover:text-blue-600"
+                              >
+                                <Edit3 size={16} />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteJob(job.id)}
+                                className="text-red-500 hover:text-red-600"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Job Modal */}
+              {showJobModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+                  <div className="bg-white rounded-lg w-full max-w-md p-6">
+                    <h3 className="text-xl font-semibold mb-4">
+                      {editJobId ? 'Edit Job Opening' : 'Add New Job Opening'}
+                    </h3>
+                    <form onSubmit={(e) => {
+                      e.preventDefault();
+                      editJobId ? handleEditJob() : handleAddJob();
+                    }}>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">Title</label>
+                          <input
+                            type="text"
+                            value={jobFormData.title}
+                            onChange={(e) => setJobFormData({...jobFormData, title: e.target.value})}
+                            className="mt-1 block text-black w-full rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            required
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">Description</label>
+                          <textarea
+                            value={jobFormData.description}
+                            onChange={(e) => setJobFormData({...jobFormData, description: e.target.value})}
+                            className="mt-1 block w-full text-black  rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            rows={3}
+                            required
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700">Type</label>
+                            <select
+                              value={jobFormData.type}
+                              onChange={(e) => setJobFormData({...jobFormData, type: e.target.value as JobType})}
+                              className="mt-1 block w-full text-black  rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            >
+                              <option value="full-time">Full Time</option>
+                              <option value="part-time">Part Time</option>
+                              <option value="intern">Intern</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700">Location</label>
+                            <select
+                              value={jobFormData.location}
+                              onChange={(e) => setJobFormData({...jobFormData, location: e.target.value as LocationType})}
+                              className="mt-1 block w-full text-black  rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            >
+                              <option value="remote">Remote</option>
+                              <option value="on-site">On Site</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">Application Link</label>
+                          <input
+                            type="url"
+                            value={jobFormData.link}
+                            onChange={(e) => setJobFormData({...jobFormData, link: e.target.value})}
+                            className="mt-1 block w-full text-black  rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            required
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">Posted Date</label>
+                          <input
+                            type="date"
+                            value={jobFormData.postedDate}
+                            onChange={(e) => setJobFormData({...jobFormData, postedDate: e.target.value})}
+                            className="mt-1 block w-full text-black  rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      <div className="mt-6 flex justify-end space-x-3">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowJobModal(false);
+                            resetJobForm();
+                          }}
+                          className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                        >
+                          {editJobId ? 'Update' : 'Add'} Job
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
+          )}
+          
         </main>
       </div>
       {/* Invoice Modal */}
