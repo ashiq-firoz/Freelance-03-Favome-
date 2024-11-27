@@ -69,7 +69,7 @@ const Footer: React.FC = () => {
                             </motion.h2>
                             <ul className="text-gray-500 dark:text-gray-400 font-medium">
                                 <li className="mb-4">
-                                    <a href="#" className="hover:underline">Careers</a>
+                                    <a href="/career" className="hover:underline">Careers</a>
                                 </li>
                                 <li>
                                     <a href="#" className="hover:underline">Contact US</a>
@@ -140,7 +140,7 @@ const Footer: React.FC = () => {
                                 </li>
                                 <li>
                                     Phone : 0495-3101257<br></br>
-                                    info@favome.com
+                                    favome2024@gmail.com
                                 </li>
                             </ul>
                         </div>
