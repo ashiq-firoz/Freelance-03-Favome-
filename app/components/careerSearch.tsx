@@ -114,6 +114,7 @@ export default function CareersPage() {
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between">
                   <div className="space-y-4">
                     <h2 className="text-xl font-semibold">{job.title}</h2>
+                    <h4 className="text-xl font-semibold">{job.description}</h4>
                     <div className="flex flex-wrap gap-2">
                       <TagComponent>{job.type}</TagComponent>
                       <TagComponent>{job.location}</TagComponent>

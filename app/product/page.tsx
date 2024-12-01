@@ -162,7 +162,14 @@ const SingleProductPage: React.FC = () => {
           month: 'short',
           year: '2-digit'
         }),
-        status: 'pending'
+        status: 'pending',
+        items: [{
+          name: product?.name,
+          price: product?.price,
+          discount:product?.discount,
+          mrp: product?.mrp,
+          quantity: 1
+        }],
       };
   
       const billRef = await addDoc(billsCollection, billData);

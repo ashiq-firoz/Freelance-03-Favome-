@@ -252,6 +252,7 @@ const DashboardWithProducts: React.FC = () => {
       router.push('/login');
     } else if (user) {
       fetchProducts();
+      fetchJobs(); // Add this line
     }
   }, [user, loading, router]);
 
@@ -300,13 +301,17 @@ const DashboardWithProducts: React.FC = () => {
 
   // Add fetch jobs function
   const fetchJobs = async () => {
-    const jobsCollection = collection(db, 'jobs');
-    const snapshot = await getDocs(jobsCollection);
-    const jobsList = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    } as Job));
-    setJobs(jobsList.sort((a, b) => new Date(b.postedDate).getTime() - new Date(a.postedDate).getTime()));
+    try {
+      const jobsCollection = collection(db, 'jobs');
+      const snapshot = await getDocs(jobsCollection);
+      const jobsList = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as Job));
+      setJobs(jobsList.sort((a, b) => new Date(b.postedDate).getTime() - new Date(a.postedDate).getTime()));
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+    }
   };
 
   // Add job handlers
